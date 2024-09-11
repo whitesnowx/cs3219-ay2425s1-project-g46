@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 
 const admin = require("firebase-admin");
-const credentials = require("./key.json");
+const firebaseConfig = require("./firebaseConfig.js");
+const credentials = JSON.parse(JSON.stringify(firebaseConfig));
 
 admin.initializeApp({
     credential: admin.credential.cert(credentials)
