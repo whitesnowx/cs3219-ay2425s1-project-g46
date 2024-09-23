@@ -78,13 +78,37 @@ app.get('/api/data/questions', async (req, res) => {
       console.log(doc.id, '=>', doc.data());
       data.push({ id: doc.id, ...doc.data() });
     });
-
     res.status(200).json(data);
   } catch (error) {
     console.error('Error fetching data from Firebase:', error);
     res.status(500).json({ message: 'Error fetching data from Firebase' });
   }
 });
+
+/**
+ * POST /createQ
+ * 
+ * Creates questions from form data and store in firebase
+ * 
+ * Responses:
+ * - 500: Server error if something goes wrong while fetching data.
+ */
+app.post('/createQ', async (req, res) => {
+  try {
+      console.log(req.body);
+      const questionJson = {
+          title: req.body.title,
+          category: req.body.category,
+          complexity: req.body.complexity ,
+          description: req.body.description
+      };
+      const response = db.collection("questions").doc().set(questionJson); // Added 'await'
+      res.send({ message: "Question created successfully", response });
+  } catch (error) {
+      res.status(500).send({ error: error.message });
+  }
+});
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
