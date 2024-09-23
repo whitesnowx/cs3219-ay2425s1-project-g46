@@ -27,13 +27,13 @@ function Question() {
 
   return (
     <div>
-      <h1>Questions</h1>
-      {/* dropdown list to filter questions by complexity */}
-      <select value={complexity} onChange={handleChange}>
+      <h1>Questions List</h1>
+        {/* dropdown list to filter questions by complexity */}
+        <select value={complexity} onChange={handleChange}>
         <option value="">Select a complexity</option>
-        <option value="easy">easy</option>
-        <option value="hard">hard</option>
-    </select>
+        <option value="easy">Easy</option>
+        <option value="hard">Hard</option>
+      </select>
       <table>
       {/* Display the data in table format */}
         <thead>
