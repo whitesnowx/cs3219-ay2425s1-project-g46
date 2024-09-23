@@ -13,6 +13,6 @@
     border-radius: 4px;
     font-size: 16px;
     color: white;
-    resize: none; /* Disables manual resizing if you want to keep the fixed size */
+    resize: none; 
   }
   
