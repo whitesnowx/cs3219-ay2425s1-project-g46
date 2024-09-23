@@ -40,16 +40,50 @@ app.post('/create', async (req, res) => {
   }
 });
 
-
-app.get('/', (req, res) => {
-  res.send('Welcome to the Express server!');
-});
-
-app.post('/submit', (req, res) => {
+/**
+ * post /submit
+ * 
+ * Submits text to firebase under texts collection.
+ * 
+ * Responses:
+ * - 200: Returns success message
+ */
+app.post('/submit/text', (req, res) => {
   const { inputText } = req.body; 
   console.log('Received input:', inputText);
   res.status(200).json({ message: `Form data received successfully: ${inputText}` });
   createText(inputText)
+});
+
+/**
+ * GET /api/data/questions
+ * 
+ * Retrieves data from firebase from questions collection.
+ * 
+ * Responses:
+ * - 200: Returns an array of data matching the query parameters.
+ * - 500: Server error if something goes wrong while fetching data.
+ */
+app.get('/api/data/questions', async (req, res) => {
+  try {
+    const snapshot = await db.collection("questions").get();
+    const data = [];
+
+    if (snapshot.empty) {
+      console.log('No matching documents.');
+      return;
+    }  
+
+    snapshot.forEach((doc) => {
+      console.log(doc.id, '=>', doc.data());
+      data.push({ id: doc.id, ...doc.data() });
+    });
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Error fetching data from Firebase:', error);
+    res.status(500).json({ message: 'Error fetching data from Firebase' });
+  }
 });
 
 app.listen(port, () => {
