@@ -9,6 +9,7 @@ const credentials = JSON.parse(JSON.stringify(firebaseConfig));
 app.use(cors()); 
 app.use(express.json()); 
 
+const bcrypt = require("bcryptjs");
 
 admin.initializeApp({
   credential: admin.credential.cert(credentials)
@@ -39,6 +40,44 @@ app.post('/create', async (req, res) => {
       res.status(500).send({ error: error.message });
   }
 });
+
+async function hashPass(password) {
+  const res = await bcrypt.hash(password, 10);
+  return res;
+}
+
+
+app.post('/user/signup', async (req, res) => {
+  try {
+      const usersRef = db.collection("users").doc(req.body.email);
+      const getUser = await usersRef.get();
+      if (getUser.exists) {
+          return res.status(400).send({ message: "Email already exists. Please use another email." });
+      }
+
+
+      console.log(req.body);
+      const username = req.body.name;
+      const email = req.body.email;
+      const password = req.body.password;
+      const encryptedPassword = await hashPass(password);
+      console.log(encryptedPassword);
+      const userJson = {
+          username: username,
+          email: email,
+          password: encryptedPassword
+
+      };
+      
+      const response = await db.collection("users").doc(email).set(userJson);
+      res.send({ message: "User created successfully", response });
+      console.log({ message: "User created successfully", response })
+  } catch (error) {
+      res.status(500).send({ error: error.message });
+      console.log({ error: error.message })
+  }
+});
+
 
 
 app.get('/', (req, res) => {
