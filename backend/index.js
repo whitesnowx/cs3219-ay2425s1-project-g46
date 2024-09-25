@@ -13,7 +13,7 @@ const bcrypt = require("bcryptjs");
 
 // session token for persistent login
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET
+const JWT_SECRET = process.env.JWT_SECRET;
 
 admin.initializeApp({
   credential: admin.credential.cert(credentials)
@@ -86,35 +86,36 @@ app.post('/user/login', async(req, res) => {
   const usersRef = db.collection("users").doc(req.body.email);
   const getUser = await usersRef.get();
   if (getUser.exists) {
-      const password = req.body.password;
+    // get the hashed password in database to compare
+    const userPassword = getUser.get("password");
 
-      // check if password entered is same as password in database
-      bcrypt.compare(password, getUser.password, (error, compareResult) => {
-        // if some error occurs
+    // check if password entered is same as password in database
+    bcrypt.compare(req.body.password, userPassword, (error, compareResult) => {
+      // if some error occurs
+      if (error) {
+        console.log(error);
+      }
+      // if passwords do not match
+      if (!compareResult) {
+        console.log("Password is incorrect.")
+        return res.status(500).send({ message: "Password is incorrect." })
+      }
+
+      // passwords match, successful login
+      const payload = { email: req.body.email };
+      jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" }, (error, token) => {
         if (error) {
           console.log(error);
+          return res.status(401).send();
         }
-        // if passwords do not match
-        if (!compareResult) {
-          console.log("Password is incorrect.")
-          return res.status(500).send({ message: "Password is incorrect." })
-        }
-
-        // passwords match, successful login
-        const payload = { email: req.body.email };
-        jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" }, (error, token) => {
-          if (error) {
-            console.log(error);
-            return res.status(401).send();
-          }
-          res.status(200).send({
-            token: token,
-            email: req.body.email,
-            username: getUser.username
-          })
+        res.status(200).send({
+          token: token,
+          email: req.body.email,
+          username: getUser.name
         })
-        return res.status(200).send({ message: "Logged in successfully. "});
       })
+      return res.status(200).send({ message: "Logged in successfully. "});
+    })
   } else {
     return res.status(404).send({ message: "No user associated with this email. Please sign up for an account." });
   }
