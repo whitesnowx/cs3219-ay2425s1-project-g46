@@ -97,11 +97,13 @@ app.post('/user/login', async(req, res) => {
       }
       // if passwords do not match
       if (!compareResult) {
-        console.log("Password is incorrect.")
-        return res.status(500).send({ message: "Password is incorrect." })
+        console.log("Password is incorrect.");
+        return res.status(500).send({ message: "Password is incorrect." });
       }
 
       // passwords match, successful login
+      // generate a token for the login session,
+      // return the token, email and username of logged-in user
       const payload = { email: req.body.email };
       jwt.sign(payload, JWT_SECRET, { algorithm: "HS256" }, (error, token) => {
         if (error) {
@@ -111,10 +113,9 @@ app.post('/user/login', async(req, res) => {
         res.status(200).send({
           token: token,
           email: req.body.email,
-          username: getUser.name
-        })
+          username: getUser.get("username")
+        });
       })
-      return res.status(200).send({ message: "Logged in successfully. "});
     })
   } else {
     return res.status(404).send({ message: "No user associated with this email. Please sign up for an account." });
