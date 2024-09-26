@@ -6,7 +6,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 100%;
 }
 
 h1 {
@@ -61,7 +61,7 @@ h1 {
 
 button {
     border: none;
-    background: cornflowerblue;
+    background: #2d2d2d;
     color: white;
     padding: 12px 24px;
     margin: 8px;
