@@ -13,23 +13,6 @@ function Login() {
 
 	const navigate = useNavigate();
 
-	const onButtonClick = () => {
-		// Set initial error values to empty
-		setEmailError('')
-		setPasswordError('')
-	
-		// Check if the user has entered both fields correctly
-		if ('' === email) {
-			setEmailError('Email is empty')
-			return
-		}
-	
-		if ('' === password) {
-			setPasswordError('Password is empty')
-			return
-		}
-	}
-
 	const login = (event) => {
 		// prevent page reload
 		event.preventDefault();
@@ -74,6 +57,7 @@ function Login() {
 			// route user to homepage after login (to be modified/changed)
 			navigate("/");
 		}).catch((error) => {
+			console.log(error);
 			// if login error, display error message
 			setLoginError(error.response.data.message);
 			return
@@ -102,6 +86,8 @@ function Login() {
 				<div className="formGroup">
 				<label for="password" className="inputLabel">Password</label>
 					<input
+						id="password"
+						type="password"
 						value={password}
 						placeholder="Enter your password here"
 						onChange={ (password) => setPassword(password.target.value) }
