@@ -82,7 +82,7 @@ app.post('/user/signup', async (req, res) => {
   }
 });
 
-app.post('/user/login', async(req, res) => {
+app.post('/user/login', async (req, res) => {
   const usersRef = db.collection("users").doc(req.body.email);
   const getUser = await usersRef.get();
   if (getUser.exists) {
@@ -122,6 +122,11 @@ app.post('/user/login', async(req, res) => {
   }
 });
 
+app.post('/user/logout', async (req, res) => {
+  console.log("User is logging out.");
+  res.clearCookie('session-id');
+  return res.status(200).send({ message: "Logout successful." });
+})
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Express server!');
