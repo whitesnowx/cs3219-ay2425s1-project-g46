@@ -1,0 +1,39 @@
+nav {
+  display: flex;
+  margin-right: 40px;
+  margin-left: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  height: 10%;
+}
+
+#navBarLogo {
+  font-size: 25px;
+  display: flex;
+  margin: auto 0 auto 0;
+}
+
+#navBarContent {
+  font-size: 20px;
+  display: flex;
+  margin: auto 0 auto auto;
+}
+
+#navBarLinks {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style-type: none;
+  display: flex;
+}
+
+li {
+  padding: 0 15px 0 15px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
