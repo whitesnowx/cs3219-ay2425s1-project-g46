@@ -130,6 +130,19 @@ app.put("/questions/update/:id", async (req, res) => {
   }
 });
 
+app.delete("/questions/delete/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id; 
+    console.log("Deleting question ID:", questionId);
+    
+    await db.collection("questions").doc(questionId).delete();
+
+    res.send({ message: "Question deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
