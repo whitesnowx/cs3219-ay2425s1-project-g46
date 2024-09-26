@@ -140,7 +140,7 @@ function Question() {
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
         </select>
-        <table>
+        <table id="questionList">
           {/* Display the data in table format */}
           <thead>
             <tr>
@@ -161,8 +161,10 @@ function Question() {
                 <td>{item.complexity}</td>
                 <td>{item.description}</td>
                 <td>
-                  <button onClick={() => handleEdit(item)}>Edit</button>
-                  <button onClick={() => handleDelete(item.id)}>Delete</button>
+                  <div className="action-button-container">
+                    <button className="edit-question" onClick={() => handleEdit(item)}>Edit</button>
+                    <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button> 
+                  </div>
                 </td>
               </tr>
             ))}
