@@ -10,6 +10,10 @@ function NavBar() {
       </div>
       <div id="navBarContent">
         <ul id="navBarLinks">
+          {/* links to be modified */}
+          <li>
+            <a href="/">Home</a>
+          </li>
           <li>
             <a href="/signup">Sign Up</a>
           </li>
