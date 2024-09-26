@@ -1,6 +1,6 @@
 import React from 'react'
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
-import Signup from './Signup'
+import Signup from './user-service/Signup'
 import Login from "./user-service/Login"
 
 function App() {
