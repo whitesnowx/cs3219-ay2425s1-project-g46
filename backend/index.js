@@ -130,6 +130,8 @@ app.put("/questions/update/:id", async (req, res) => {
   }
 });
 
+
+
 app.delete("/questions/delete/:id", async (req, res) => {
   try {
     const questionId = req.params.id; 
@@ -138,6 +140,22 @@ app.delete("/questions/delete/:id", async (req, res) => {
     await db.collection("questions").doc(questionId).delete();
 
     res.send({ message: "Question deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+
+app.get("/view/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id; 
+    const questionSnapshot = await db.collection("questions").doc(questionId).get();
+
+    if (!questionSnapshot.exists) {
+      return res.status(404).send({ message: "Question not found" });
+    }
+
+    res.send(questionSnapshot.data());
   } catch (error) {
     res.status(500).send({ error: error.message });
   }

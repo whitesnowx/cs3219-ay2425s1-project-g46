@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import React, { useEffect, useState } from "react";
 import "./Question.css";
 import axios from "axios";
@@ -162,6 +163,9 @@ function Question() {
                 <td>{item.description}</td>
                 <td>
                   <div className="action-button-container">
+                    <Link to={`/view/${item.id}`}>
+                      <button>View</button>
+                    </Link>
                     <button className="edit-question" onClick={() => handleEdit(item)}>Edit</button>
                     <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button> 
                   </div>
