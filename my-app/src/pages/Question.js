@@ -51,7 +51,6 @@ function Question() {
     console.log("Input text before sending:", formData);
     try {
       if (selectedQuestionId) {
-        // Update existing question
         const response = await axios.put(
           `http://localhost:5000/questions/update/${selectedQuestionId}`,
           formData
@@ -78,6 +77,16 @@ function Question() {
       complexity: item.complexity,
       description: item.description,
     });
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/questions/delete/${id}`);
+      console.log("Question deleted successfully");
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting question:", error);
+    }
   };
 
   return (
@@ -153,6 +162,7 @@ function Question() {
                 <td>{item.description}</td>
                 <td>
                   <button onClick={() => handleEdit(item)}>Edit</button>
+                  <button onClick={() => handleDelete(item.id)}>Delete</button>
                 </td>
               </tr>
             ))}
