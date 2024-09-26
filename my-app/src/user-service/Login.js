@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "./Login.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../common/NavBar.js';
 
 // reference from https://clerk.com/blog/building-a-react-login-page-template
 function Login() {
@@ -65,41 +66,44 @@ function Login() {
 	}
 
 	return (
-		// div containing login form
-		<div id="loginFormContainer">
-			{/* title of form */}
-			<h1>Login</h1>
-			<label className="errorLabel">{loginError}</label>
-			{/* login form */}
-			<form id="loginForm" onSubmit={login}>
-				<div className="formGroup">
-					<label for="email" className="inputLabel">Email</label>
-					<input
-						id="email"
-						value={email}
-						placeholder="Enter your email here"
-						onChange={ (email) => setEmail(email.target.value) }
-						className="inputBox"
-					/>
-					<label className="errorLabel">{emailError}</label>
-				</div>
-				<div className="formGroup">
-				<label for="password" className="inputLabel">Password</label>
-					<input
-						id="password"
-						type="password"
-						value={password}
-						placeholder="Enter your password here"
-						onChange={ (password) => setPassword(password.target.value) }
-						className="inputBox"
-					/>
-					<label className="errorLabel">{passwordError}</label>
-				</div>
-				{/* login button */}
-				<div id="buttonContainer">
-					<button type="submit">Login</button>
-				</div>
-			</form>
+		<div id="loginPageContainer">
+			<NavBar />
+			{/* div containing login form */}
+			<div id="loginFormContainer">
+				{/* title of form */}
+				<h1>Login</h1>
+				<label className="errorLabel">{loginError}</label>
+				{/* login form */}
+				<form id="loginForm" onSubmit={login}>
+					<div className="formGroup">
+						<label for="email" className="inputLabel">Email</label>
+						<input
+							id="email"
+							value={email}
+							placeholder="Enter your email here"
+							onChange={ (email) => setEmail(email.target.value) }
+							className="inputBox"
+						/>
+						<label className="errorLabel">{emailError}</label>
+					</div>
+					<div className="formGroup">
+					<label for="password" className="inputLabel">Password</label>
+						<input
+							id="password"
+							type="password"
+							value={password}
+							placeholder="Enter your password here"
+							onChange={ (password) => setPassword(password.target.value) }
+							className="inputBox"
+						/>
+						<label className="errorLabel">{passwordError}</label>
+					</div>
+					{/* login button */}
+					<div id="buttonContainer">
+						<button type="submit">Login</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	);
 
