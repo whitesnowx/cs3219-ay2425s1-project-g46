@@ -76,7 +76,7 @@ app.get("/questions/get", async (req, res) => {
     }
 
     snapshot.forEach((doc) => {
-      console.log(doc.id, "=>", doc.data());
+      // console.log(doc.id, "=>", doc.data());
       data.push({ id: doc.id, ...doc.data() });
     });
     res.status(200).json(data);
@@ -85,6 +85,30 @@ app.get("/questions/get", async (req, res) => {
     res.status(500).json({ message: "Error fetching data from Firebase" });
   }
 });
+
+/**
+ * GET /question/<questionId>
+ * 
+ * Retrieves specified question from questions collection in firebase.
+ * 
+ * Responses:
+ * - 200: Returns data matching the questionId.
+ * - 500: Server error if something goes wrong while fetching data.
+ */
+app.get("/question/:questionId", async (req, res) => {
+  try {
+    const questionId = req.params.questionId;
+    const questionSnap = await db.collection("questions").doc(questionId).get();
+    
+    if  (!questionSnap.exists) {
+      return res.status(404).send({ message: "Question not found" });
+    }
+
+    res.status(200).send(questionSnap.data());
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+})
 
 /**
  * POST /createQ
