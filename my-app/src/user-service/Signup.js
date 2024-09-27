@@ -36,7 +36,7 @@ function Signup() {
             validationErrors.confirmPassword === "") {
             axios.post("http://localhost:5000/user/signup", values)
             .then(res => {
-                naviagte('/login');
+                naviagte('/user/login');
                 setValues({ 
                     name: '',
                     email: '',
@@ -83,7 +83,7 @@ function Signup() {
                         <button class="register-button">Register</button>
                     </div>
                     
-                    <p class="login-section">Already have an account? <a href="/login">Log in</a></p>
+                    <p class="login-section">Already have an account? <a href="/user/login">Log in</a></p>
 
                 </form>
             </div>
