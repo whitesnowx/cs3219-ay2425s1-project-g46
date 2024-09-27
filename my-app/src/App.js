@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Test from './pages/Test';
 import Question from './pages/Question';
-import QuestionPage from './pages/View';
+import QuestionPage from './pages/QuestionPage';
 
 /**
  * 
