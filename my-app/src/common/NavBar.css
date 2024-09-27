@@ -30,10 +30,33 @@ ul {
 }
 
 li {
-  padding: 0 15px 0 15px;
+  padding: 12px 15px;
+  margin: 0 8px 0 8px;
+}
+
+#signUpBtn {
+  border: none;
+  background: lightgray;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#loginBtn {
+  border: none;
+  background: black;
+  padding: 12px 15px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+#loginBtn > a {
+  color: white;
 }
 
 a {
   text-decoration: none;
   color: black;
+  text-align: center;
 }

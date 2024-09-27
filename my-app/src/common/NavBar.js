@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import './NavBar.css';
 
 function NavBar() {
@@ -14,10 +14,10 @@ function NavBar() {
           <li>
             <a href="/">Home</a>
           </li>
-          <li>
+          <li id="signUpBtn">
             <a href="/signup">Sign Up</a>
           </li>
-          <li>
+          <li id="loginBtn">
             <a href="/login">Login</a>
           </li>
         </ul>
