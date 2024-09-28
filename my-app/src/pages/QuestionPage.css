@@ -72,6 +72,10 @@
   background-color: #0000000f;
 }
 
+.questionTag::first-letter {
+  text-transform: capitalize;
+}
+
 #errorContainer {
   background-color: #f2f2f2;
   border: 0px;
