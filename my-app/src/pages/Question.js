@@ -89,6 +89,16 @@ function Question() {
     }
   };
 
+  const handleReturnToAdd = () => {
+    setSelectedQuestionId(null);
+    setFormData({
+      title: "",
+      category: "",
+      complexity: "",
+      description: "",
+    });
+  };
+
   return (
     <div id="question">
       {/* <h1>Make Questions</h1> */}
@@ -129,6 +139,11 @@ function Question() {
           ></textarea>
           {/* <button type="submit">Add</button> */}
           <button type="submit">{selectedQuestionId ? "Update" : "Add"}</button>
+          {selectedQuestionId && (
+            <button type="button" onClick={handleReturnToAdd}>
+              Return to Add Question
+            </button>
+          )}
         </div>
       </form>
       <div>
