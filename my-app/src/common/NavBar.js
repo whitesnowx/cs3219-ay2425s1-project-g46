@@ -14,10 +14,10 @@ function NavBar() {
 
       {/* add welcome message if user is logged in */}
       {isLoggedIn ?
-      <span id="welcomeUser">
-        Welcome, {username}!
-      </span>
-      : null
+        <span id="welcomeUser">
+          Welcome, {username}!
+        </span>
+        : null
       }
 
       <div id="navBarContent">
