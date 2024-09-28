@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import "./Login.css";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../common/NavBar';
 
 // reference from https://clerk.com/blog/building-a-react-login-page-template
 function Login() {
+
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+	const [passwordError, setPasswordError] = useState('');
 	const [loginError, setLoginError] = useState('');
 
 	const navigate = useNavigate();
@@ -17,28 +19,23 @@ function Login() {
 		// prevent page reload
 		event.preventDefault();
 
-		// if user is already logged in, they cannot access this page
-		if (sessionStorage.getItem('token') !== null) {
-			navigate("/");
-		}
-
 		// set initial error values to empty
 		setEmailError('');
 		setPasswordError('');
 		setLoginError('');
-	
+
 		// simple validation, check if user has entered both fields
 		// to be modified/changed
 		if ('' === email) {
 			setEmailError('Email is empty');
 			return;
 		}
-	
+
 		if ('' === password) {
 			setPasswordError('Password is empty');
 			return;
 		}
-		
+
 		const reqBody = {
 			email: email,
 			password: password
@@ -65,41 +62,44 @@ function Login() {
 	}
 
 	return (
-		// div containing login form
-		<div id="loginFormContainer">
-			{/* title of form */}
-			<h1>Login</h1>
-			<label className="errorLabel">{loginError}</label>
-			{/* login form */}
-			<form id="loginForm" onSubmit={login}>
-				<div className="formGroup">
-					<label for="email" className="inputLabel">Email</label>
-					<input
-						id="email"
-						value={email}
-						placeholder="Enter your email here"
-						onChange={ (email) => setEmail(email.target.value) }
-						className="inputBox"
-					/>
-					<label className="errorLabel">{emailError}</label>
-				</div>
-				<div className="formGroup">
-				<label for="password" className="inputLabel">Password</label>
-					<input
-						id="password"
-						type="password"
-						value={password}
-						placeholder="Enter your password here"
-						onChange={ (password) => setPassword(password.target.value) }
-						className="inputBox"
-					/>
-					<label className="errorLabel">{passwordError}</label>
-				</div>
-				{/* login button */}
-				<div id="buttonContainer">
-					<button type="submit">Login</button>
-				</div>
-			</form>
+		<div id="loginPageContainer">
+			<NavBar />
+			{/* div containing login form */}
+			<div id="loginFormContainer">
+				{/* title of form */}
+				<h1>Login</h1>
+				<label className="errorLabel">{loginError}</label>
+				{/* login form */}
+				<form id="loginForm" onSubmit={login}>
+					<div className="formGroup">
+						<label for="email" className="inputLabel">Email</label>
+						<input
+							id="email"
+							value={email}
+							placeholder="Enter your email here"
+							onChange={(email) => setEmail(email.target.value)}
+							className="inputBox"
+						/>
+						<label className="errorLabel">{emailError}</label>
+					</div>
+					<div className="formGroup">
+						<label for="password" className="inputLabel">Password</label>
+						<input
+							id="password"
+							type="password"
+							value={password}
+							placeholder="Enter your password here"
+							onChange={(password) => setPassword(password.target.value)}
+							className="inputBox"
+						/>
+						<label className="errorLabel">{passwordError}</label>
+					</div>
+					{/* login button */}
+					<div id="buttonContainer">
+						<button type="submit">Login</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	);
 
