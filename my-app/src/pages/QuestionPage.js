@@ -14,6 +14,7 @@ function QuestionPage() {
         const response = await axios.get(`http://localhost:5000/question/${questionId}`);
         setQuestionData(response.data);
       } catch (error) {
+        setQuestionData(null);
         console.error("Error fetching question:", error);
       }
     };
@@ -22,7 +23,14 @@ function QuestionPage() {
   }, [questionId]);
 
   if (!questionData) {
-    return <div>Loading...</div>
+    return (
+      <div id="errorContainer" class="container">
+        <h1>Error 404</h1>
+        <div class="row">
+          <button id="backBtn" class="btn" onClick={() => navigate(-1)}>Back</button>
+        </div>
+      </div>
+    );
   }
 
   return (

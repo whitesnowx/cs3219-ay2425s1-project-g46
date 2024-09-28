@@ -71,3 +71,9 @@
 
   background-color: #0000000f;
 }
+
+#errorContainer {
+  background-color: #f2f2f2;
+  border: 0px;
+  box-shadow: none;
+}
