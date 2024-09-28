@@ -19,6 +19,11 @@ nav {
   margin: auto 0 auto auto;
 }
 
+#welcomeUser {
+  font-size: 18px;
+  margin: auto auto auto 5%;
+}
+
 #navBarLinks {
   margin: 0;
   padding: 0;
@@ -42,17 +47,14 @@ li {
   cursor: pointer;
 }
 
-#loginBtn {
+#logBtn > * {
   border: none;
   background: black;
+  color: white;
   padding: 12px 15px;
   font-size: 20px;
   border-radius: 8px;
   cursor: pointer;
-}
-
-#loginBtn > a {
-  color: white;
 }
 
 a {
