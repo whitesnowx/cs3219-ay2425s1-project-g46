@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./QuestionPage.css";
 import axios from "axios";
 
 function QuestionPage() {
   const { questionId } = useParams();
   const [questionData, setQuestionData] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -42,6 +43,10 @@ function QuestionPage() {
 
       <div class="row">
         <p>{questionData.description}</p>
+      </div>
+
+      <div class="row">
+        <button id="backBtn" class="btn" onClick={() => navigate(-1)}>Back</button>
       </div>
     </div>
   )
