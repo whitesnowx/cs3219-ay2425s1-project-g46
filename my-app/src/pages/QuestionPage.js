@@ -6,21 +6,35 @@ import axios from "axios";
 function QuestionPage() {
   const { questionId } = useParams();
   const [questionData, setQuestionData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
+        // Set loading to true before calling API
+        setLoading(true);
+
         const response = await axios.get(`http://localhost:5000/question/${questionId}`);
         setQuestionData(response.data);
+
+        // Switch loading to false after fetch is completed
+        setLoading(false);
       } catch (error) {
         setQuestionData(null);
+        setLoading(false);
         console.error("Error fetching question:", error);
       }
     };
 
     fetchQuestion();
   }, [questionId]);
+
+  if (loading) {
+    return (
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    );
+  }
 
   if (!questionData) {
     return (
