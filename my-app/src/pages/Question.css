@@ -71,6 +71,7 @@ select {
   cursor: pointer;
   transition: background-color 0.3s;
   width: 100%;
+  margin-top: 10px;
 }
 
 #questionForm button:hover {
@@ -104,4 +105,8 @@ select {
 
 .delete-question:hover {
   background-color: #f44336;
+}
+
+#complexity::first-letter {
+  text-transform: capitalize;
 }
