@@ -21,8 +21,7 @@ function Question() {
   useEffect(() => {
     // Set loading to true before calling API
     setLoading(true);
-
-    fetch("http://localhost:5000/questions/get")
+    fetch("http://localhost:5000/question/")
       .then((response) => response.json())
       .then((data) => {
         setData(data)

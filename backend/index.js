@@ -51,36 +51,6 @@ app.post("/submit/text", (req, res) => {
 });
 
 /**
- * GET /api/data/questions
- *
- * Retrieves data from firebase from questions collection.
- *
- * Responses:
- * - 200: Returns an array of data matching the query parameters.
- * - 500: Server error if something goes wrong while fetching data.
- */
-app.get("/questions/get", async (req, res) => {
-  try {
-    const snapshot = await db.collection("questions").get();
-    const data = [];
-
-    if (snapshot.empty) {
-      console.log("No matching documents.");
-      return;
-    }
-
-    snapshot.forEach((doc) => {
-      // console.log(doc.id, "=>", doc.data());
-      data.push({ id: doc.id, ...doc.data() });
-    });
-    res.status(200).json(data);
-  } catch (error) {
-    console.error("Error fetching data from Firebase:", error);
-    res.status(500).json({ message: "Error fetching data from Firebase" });
-  }
-});
-
-/**
  * POST /add
  *
  * Creates questions from form data and store in firebase

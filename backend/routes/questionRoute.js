@@ -2,9 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    getQuestion
+    getAllQuestions,
+    getQuestionById
 } = require("../controller/questionController");
 
-router.get("/:questionId", getQuestion);
+router.get("/", getAllQuestions);
+router.get("/:questionId", getQuestionById);
 
 module.exports = router;
