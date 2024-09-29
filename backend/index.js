@@ -81,7 +81,7 @@ app.get("/questions/get", async (req, res) => {
 });
 
 /**
- * POST /createQ
+ * POST /add
  *
  * Creates questions from form data and store in firebase
  *
@@ -92,11 +92,15 @@ app.post("/questions/add", async (req, res) => {
   try {
     console.log(req.body);
     const questionJson = {
-      title: req.body.title,
+      title: req.body.title.trim(),
       category: req.body.category,
       complexity: req.body.complexity,
       description: req.body.description,
     };
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
+    if (!querySnap.empty) {
+      return res.status(409).json({ message: 'Duplicate entry found' });
+    }
     const response = db.collection("questions").doc().set(questionJson); // Added 'await'
     res.send({ message: "Question created successfully", response });
   } catch (error) {
@@ -110,16 +114,24 @@ app.put("/questions/update/:id", async (req, res) => {
     console.log("Updating question ID:", questionId);
     
     const updatedQuestion = {
-      title: req.body.title,
+      title: req.body.title.trim(),
       category: req.body.category,
       complexity: req.body.complexity,
       description: req.body.description,
     };
-
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
+    if (!querySnap.empty) {
+      for (const doc of querySnap.docs) {
+        if (doc.id != questionId) {
+          return res.status(409).json({ message: 'Duplicate entry found' });
+        }
+      }
+    }
     const response = await db.collection("questions").doc(questionId).set(updatedQuestion, { merge: true });
 
     res.send({ message: "Question updated successfully", response });
   } catch (error) {
+    console.log(error.message)
     res.status(500).send({ error: error.message });
   }
 });
