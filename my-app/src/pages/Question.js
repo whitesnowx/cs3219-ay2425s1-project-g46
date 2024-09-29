@@ -78,6 +78,10 @@ function Question() {
       complexity: item.complexity,
       description: item.description,
     });
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',  
+    });
   };
 
   const handleDelete = async (id) => {
