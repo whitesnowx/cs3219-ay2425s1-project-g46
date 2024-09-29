@@ -9,7 +9,7 @@ const questionCollection = db.collection("questions");
  * Responses:
  * - 500: Server error if something goes wrong while fetching data.
  */
-const createQuestion = async (req, res, next) => {
+const createQuestion = async (req, res) => {
   try {
     console.log(req.body);
     const questionJson = {
@@ -40,7 +40,7 @@ const createQuestion = async (req, res, next) => {
  * - 200: Returns an array of data matching the query parameters.
  * - 500: Server error if something goes wrong while fetching data.
  */
-const getAllQuestions = async (req, res, next) => {
+const getAllQuestions = async (req, res) => {
   try {
     const questions = await questionCollection.get();
 
@@ -70,7 +70,7 @@ const getAllQuestions = async (req, res, next) => {
  * - 200: Returns data matching the questionId.
  * - 500: Server error if something goes wrong while fetching data.
  */
-const getQuestionById = async (req, res, next) => {
+const getQuestionById = async (req, res) => {
   try {
     const id = req.params.questionId;
     const question = questionCollection.doc(id);
@@ -91,7 +91,7 @@ const getQuestionById = async (req, res, next) => {
  * 
  * Updates specified question from questions collection in firebase.
  */
-const updateQuestion = async (req, res, next) => {
+const updateQuestion = async (req, res) => {
   try {
     const questionId = req.params.questionId;
     console.log("Updating question ID:", questionId);
@@ -124,7 +124,7 @@ const updateQuestion = async (req, res, next) => {
  * 
  * Deletes specified question from questions collection in firebase.
  */
-const deleteQuestion = async (req, res, next) => {
+const deleteQuestion = async (req, res) => {
   try {
     const questionId = req.params.questionId; 
     console.log("Deleting question ID:", questionId);
