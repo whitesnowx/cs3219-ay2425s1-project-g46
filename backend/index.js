@@ -4,6 +4,8 @@ const db = require("./firebase");
 const app = express();
 const port = 5000;
 
+const questionRoute = require("./routes/questionRoute");
+
 app.use(cors());
 app.use(express.json());
 
@@ -79,30 +81,6 @@ app.get("/questions/get", async (req, res) => {
 });
 
 /**
- * GET /question/<questionId>
- * 
- * Retrieves specified question from questions collection in firebase.
- * 
- * Responses:
- * - 200: Returns data matching the questionId.
- * - 500: Server error if something goes wrong while fetching data.
- */
-app.get("/question/:questionId", async (req, res) => {
-  try {
-    const questionId = req.params.questionId;
-    const questionSnap = await db.collection("questions").doc(questionId).get();
-
-    if (!questionSnap.exists) {
-      return res.status(404).send({ message: "Question not found" });
-    }
-
-    res.status(200).send(questionSnap.data());
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-})
-
-/**
  * POST /createQ
  *
  * Creates questions from form data and store in firebase
@@ -158,6 +136,9 @@ app.delete("/questions/delete/:id", async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 });
+
+// Routes
+app.use("/question", questionRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
