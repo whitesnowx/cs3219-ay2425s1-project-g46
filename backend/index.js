@@ -103,7 +103,7 @@ app.get("/question/:questionId", async (req, res) => {
 })
 
 /**
- * POST /createQ
+ * POST /add
  *
  * Creates questions from form data and store in firebase
  *
@@ -119,6 +119,10 @@ app.post("/questions/add", async (req, res) => {
       complexity: req.body.complexity,
       description: req.body.description,
     };
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title).get();
+    if (!querySnap.empty) {
+      return res.status(409).json({ message: 'Duplicate entry found' });
+    }
     const response = db.collection("questions").doc().set(questionJson); // Added 'await'
     res.send({ message: "Question created successfully", response });
   } catch (error) {
@@ -137,7 +141,10 @@ app.put("/questions/update/:id", async (req, res) => {
       complexity: req.body.complexity,
       description: req.body.description,
     };
-
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title).get();
+    if (!querySnap.empty) {
+      return res.status(409).json({ message: 'Duplicate entry found' });
+    }
     const response = await db.collection("questions").doc(questionId).set(updatedQuestion, { merge: true });
 
     res.send({ message: "Question updated successfully", response });

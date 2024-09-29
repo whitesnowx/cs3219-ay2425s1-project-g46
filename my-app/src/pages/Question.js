@@ -14,6 +14,7 @@ function Question() {
   });
 
   const [selectedQuestionId, setSelectedQuestionId] = useState(null); // For tracking the question to edit
+  const [error, setError] = useState(''); // State to store error message
 
   // Fetch user data from API when the component mounts
   useEffect(() => {
@@ -66,6 +67,9 @@ function Question() {
       }
       window.location.reload();
     } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setError('A question with the same title already exists. Please enter a new question.');
+      } 
       console.error("Error submitting form:", error);
     }
   };
@@ -151,6 +155,7 @@ function Question() {
           )}
         </div>
       </form>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
         <h1>Questions List</h1>
         {/* dropdown list to filter questions by complexity */}
