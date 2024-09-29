@@ -126,6 +126,39 @@ app.post("/questions/add", async (req, res) => {
   }
 });
 
+app.put("/questions/update/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id; 
+    console.log("Updating question ID:", questionId);
+    
+    const updatedQuestion = {
+      title: req.body.title,
+      category: req.body.category,
+      complexity: req.body.complexity,
+      description: req.body.description,
+    };
+
+    const response = await db.collection("questions").doc(questionId).set(updatedQuestion, { merge: true });
+
+    res.send({ message: "Question updated successfully", response });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
+app.delete("/questions/delete/:id", async (req, res) => {
+  try {
+    const questionId = req.params.id; 
+    console.log("Deleting question ID:", questionId);
+    
+    await db.collection("questions").doc(questionId).delete();
+
+    res.send({ message: "Question deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
