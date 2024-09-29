@@ -37,7 +37,7 @@ function Question() {
 
   if (loading) {
     return (
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
     );
   }
 
@@ -77,7 +77,7 @@ function Question() {
         console.log("Form updated successfully:", response.data);
       } else {
         const response = await axios.post(
-          "http://localhost:5000/questions/add",
+          "http://localhost:5000/question/add",
           formData
         );
         console.log("Form submitted successfully:", response.data);

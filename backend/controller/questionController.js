@@ -2,6 +2,36 @@ const db = require("../firebase");
 const questionCollection = db.collection("questions");
 
 /**
+ * POST /add
+ *
+ * Creates questions from form data and store in firebase
+ *
+ * Responses:
+ * - 500: Server error if something goes wrong while fetching data.
+ */
+const createQuestion = async (req, res, next) => {
+    try {
+        console.log(req.body);
+        const questionJson = {
+            title: req.body.title.trim(),
+            category: req.body.category,
+            complexity: req.body.complexity,
+            description: req.body.description,
+        };
+
+        const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
+        if (!querySnap.empty) {
+            return res.status(409).json({ message: 'Duplicate entry found' });
+        }
+
+        const response = db.collection("questions").doc().set(questionJson); // Added 'await'
+        res.send({ message: "Question created successfully", response });
+    } catch (error) {
+        res.status(500).send({ error: error.message });
+    }
+}
+
+/**
  * GET /question/
  *
  * Retrieves data from firebase from questions collection.
@@ -57,4 +87,4 @@ const getQuestionById = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllQuestions, getQuestionById };
+module.exports = { createQuestion, getAllQuestions, getQuestionById };

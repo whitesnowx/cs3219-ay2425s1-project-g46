@@ -50,34 +50,6 @@ app.post("/submit/text", (req, res) => {
   createText(inputText);
 });
 
-/**
- * POST /add
- *
- * Creates questions from form data and store in firebase
- *
- * Responses:
- * - 500: Server error if something goes wrong while fetching data.
- */
-app.post("/questions/add", async (req, res) => {
-  try {
-    console.log(req.body);
-    const questionJson = {
-      title: req.body.title.trim(),
-      category: req.body.category,
-      complexity: req.body.complexity,
-      description: req.body.description,
-    };
-    const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
-    if (!querySnap.empty) {
-      return res.status(409).json({ message: 'Duplicate entry found' });
-    }
-    const response = db.collection("questions").doc().set(questionJson); // Added 'await'
-    res.send({ message: "Question created successfully", response });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-});
-
 app.put("/questions/update/:id", async (req, res) => {
   try {
     const questionId = req.params.id; 
