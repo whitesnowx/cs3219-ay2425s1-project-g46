@@ -15,14 +15,32 @@ function Question() {
 
   const [selectedQuestionId, setSelectedQuestionId] = useState(null); // For tracking the question to edit
   const [error, setError] = useState(''); // State to store error message
+  const [loading, setLoading] = useState(true);
 
   // Fetch user data from API when the component mounts
   useEffect(() => {
+    // Set loading to true before calling API
+    setLoading(true);
+
     fetch("http://localhost:5000/questions/get")
       .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error("Error fetching data:", error));
+      .then((data) => {
+        setData(data)
+        // Switch loading to false after fetch is completed
+        setLoading(false);
+      })
+      .catch((error) => {
+        setData(null);
+        setLoading(false);
+        console.error("Error fetching data:", error)
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    );
+  }
 
   // Handle filtering from dropdown event for complexity
   const handleChange = (event) => {
