@@ -50,19 +50,6 @@ app.post("/submit/text", (req, res) => {
   createText(inputText);
 });
 
-app.delete("/questions/delete/:id", async (req, res) => {
-  try {
-    const questionId = req.params.id; 
-    console.log("Deleting question ID:", questionId);
-    
-    await db.collection("questions").doc(questionId).delete();
-
-    res.send({ message: "Question deleted successfully" });
-  } catch (error) {
-    res.status(500).send({ error: error.message });
-  }
-});
-
 // Routes
 app.use("/question", questionRoute);
 

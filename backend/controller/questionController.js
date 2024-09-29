@@ -89,7 +89,7 @@ const getQuestionById = async (req, res, next) => {
 /**
  * PUT /question/update/<questionId>
  * 
- * Retrieves specified question from questions collection in firebase.
+ * Updates specified question from questions collection in firebase.
  */
 const updateQuestion = async (req, res, next) => {
   try {
@@ -119,8 +119,27 @@ const updateQuestion = async (req, res, next) => {
   }
 }
 
+/**
+ * DELETE /question/delete/<questionId>
+ * 
+ * Deletes specified question from questions collection in firebase.
+ */
+const deleteQuestion = async (req, res, next) => {
+  try {
+    const questionId = req.params.questionId; 
+    console.log("Deleting question ID:", questionId);
+    
+    await db.collection("questions").doc(questionId).delete();
+
+    res.send({ message: "Question deleted successfully" });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+}
+
 module.exports = { createQuestion,
                     getAllQuestions,
                     getQuestionById,
-                    updateQuestion
+                    updateQuestion,
+                    deleteQuestion
                   };

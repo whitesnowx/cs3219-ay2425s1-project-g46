@@ -86,7 +86,7 @@ function Question() {
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setError('A question with the same title already exists. Please enter a new question.');
-      } 
+      }
       console.error("Error submitting form:", error);
     }
   };
@@ -101,13 +101,13 @@ function Question() {
     });
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',  
+      behavior: 'smooth',
     });
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/questions/delete/${id}`);
+      await axios.delete(`http://localhost:5000/question/delete/${id}`);
       console.log("Question deleted successfully");
       window.location.reload();
     } catch (error) {
@@ -209,7 +209,7 @@ function Question() {
                 <td>
                   <div className="action-button-container">
                     <button className="edit-question" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button> 
+                    <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button>
                   </div>
                 </td>
               </tr>

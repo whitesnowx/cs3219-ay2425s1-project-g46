@@ -5,12 +5,14 @@ const {
   createQuestion,
   getAllQuestions,
   getQuestionById,
-  updateQuestion
+  updateQuestion,
+  deleteQuestion
 } = require("../controller/questionController");
 
 router.get("/", getAllQuestions);
 router.get("/:questionId", getQuestionById);
 router.post("/add", createQuestion);
 router.put("/update/:questionId", updateQuestion);
+router.delete("/delete/:questionId", deleteQuestion);
 
 module.exports = router;
