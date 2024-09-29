@@ -71,7 +71,7 @@ function Question() {
     try {
       if (selectedQuestionId) {
         const response = await axios.put(
-          `http://localhost:5000/questions/update/${selectedQuestionId}`,
+          `http://localhost:5000/question/update/${selectedQuestionId}`,
           formData
         );
         console.log("Form updated successfully:", response.data);
