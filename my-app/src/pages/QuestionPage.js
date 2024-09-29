@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "./QuestionPage.css";
 import axios from "axios";
+import PageNotFound from "../components/PageNotFound";
 
 function QuestionPage() {
   const { questionId } = useParams();
@@ -38,12 +39,7 @@ function QuestionPage() {
 
   if (!questionData) {
     return (
-      <div id="errorContainer" class="container">
-        <h1>Error 404</h1>
-        <div class="row">
-          <button id="backBtn" class="btn" onClick={() => navigate(-1)}>Back</button>
-        </div>
-      </div>
+      <PageNotFound />
     );
   }
 
