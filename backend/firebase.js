@@ -15,7 +15,9 @@ const firebaseConfig = {
   universe_domain: "googleapis.com"
 };
 
-admin.initializeApp(firebaseConfig);
+admin.initializeApp({
+  credential: admin.credential.cert(firebaseConfig)
+});
 const db = admin.firestore();
 
-export default db;
+module.exports = db;
