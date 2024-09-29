@@ -69,6 +69,9 @@ function Question() {
     e.preventDefault();
     console.log("Input text before sending:", formData);
     try {
+      // Set loading to true before calling API
+      setLoading(true);
+
       if (selectedQuestionId) {
         const response = await axios.put(
           `http://localhost:5000/question/update/${selectedQuestionId}`,
@@ -82,10 +85,13 @@ function Question() {
         );
         console.log("Form submitted successfully:", response.data);
       }
+
       window.location.reload();
+      setLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setError('A question with the same title already exists. Please enter a new question.');
+        setLoading(false);
       }
       console.error("Error submitting form:", error);
     }
@@ -107,9 +113,14 @@ function Question() {
 
   const handleDelete = async (id) => {
     try {
+      // Set loading to true before calling API
+      setLoading(true);
+      
       await axios.delete(`http://localhost:5000/question/delete/${id}`);
       console.log("Question deleted successfully");
+      
       window.location.reload();
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting question:", error);
     }
