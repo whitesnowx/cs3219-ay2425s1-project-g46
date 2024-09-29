@@ -114,12 +114,12 @@ app.post("/questions/add", async (req, res) => {
   try {
     console.log(req.body);
     const questionJson = {
-      title: req.body.title,
+      title: req.body.title.trim(),
       category: req.body.category,
       complexity: req.body.complexity,
       description: req.body.description,
     };
-    const querySnap = await db.collection("questions").where('title', '==', req.body.title).get();
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
     if (!querySnap.empty) {
       return res.status(409).json({ message: 'Duplicate entry found' });
     }
@@ -136,19 +136,24 @@ app.put("/questions/update/:id", async (req, res) => {
     console.log("Updating question ID:", questionId);
     
     const updatedQuestion = {
-      title: req.body.title,
+      title: req.body.title.trim(),
       category: req.body.category,
       complexity: req.body.complexity,
       description: req.body.description,
     };
-    const querySnap = await db.collection("questions").where('title', '==', req.body.title).get();
+    const querySnap = await db.collection("questions").where('title', '==', req.body.title.trim()).get();
     if (!querySnap.empty) {
-      return res.status(409).json({ message: 'Duplicate entry found' });
+      for (const doc of querySnap.docs) {
+        if (doc.id != questionId) {
+          return res.status(409).json({ message: 'Duplicate entry found' });
+        }
+      }
     }
     const response = await db.collection("questions").doc(questionId).set(updatedQuestion, { merge: true });
 
     res.send({ message: "Question updated successfully", response });
   } catch (error) {
+    console.log(error.message)
     res.status(500).send({ error: error.message });
   }
 });
