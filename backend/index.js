@@ -5,6 +5,7 @@ const port = 5000
 const admin = require("firebase-admin");
 const firebaseConfig = require("./firebaseConfig.js");
 const credentials = JSON.parse(JSON.stringify(firebaseConfig));
+const createRoutes = require('./user_profile/user_routes.js'); 
 
 app.use(cors()); 
 app.use(express.json()); 
@@ -18,32 +19,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = admin.firestore();
-
-const createText = async (inputText) => {
-  const id = inputText;
-  await db.collection('texts').add({text:inputText});
-};
-
-app.post('/create', async (req, res) => {
-  try {
-      console.log(req.body);
-      const id = req.body.email;
-      const userJson = {
-          email: req.body.email,
-          firstName: req.body.firstName,
-          lastName: req.body.lastName // Fixed typo
-      };
-      const response = db.collection("users").doc(id).set(userJson); // Added 'await'
-      res.send({ message: "User created successfully", response });
-  } catch (error) {
-      res.status(500).send({ error: error.message });
-  }
-});
+app.use('/user', createRoutes(db));
 
 
 app.get('/', (req, res) => {
   res.send('Welcome to the Express server!');
 });
+
+
+const createText = async (inputText) => {
+  const id = inputText;
+  await db.collection('texts').add({text:inputText});
+  };
 
 app.post('/submit', (req, res) => {
   const { inputText } = req.body; 
@@ -51,6 +38,7 @@ app.post('/submit', (req, res) => {
   res.status(200).json({ message: `Form data received successfully: ${inputText}` });
   createText(inputText)
 });
+
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
