@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Validation from './SignupValidation';
 import axios from 'axios';
 import './Signup.css';
+import NavBar from '../common/NavBar';
 
 function Signup() {
   const [values, setValues] = useState({
@@ -55,8 +56,9 @@ function Signup() {
 
 
   return (
-    <div id="signupFormContainer">
-      <div className='bg-white p-3 rounded w-50'>
+    <div >
+      <NavBar />
+      <div id="signupFormContainer">
         <h1>Sign-up</h1>
         <form action='' onSubmit={handleSubmit}>
           <div className='formGroup'>
@@ -80,11 +82,8 @@ function Signup() {
             {errors.confirmPassword && <span className='errorLabel'> {errors.confirmPassword}</span>}
           </div>
           <div class="registerButton">
-            <p>I agree to the terms and conditions</p>
             <button class="register-button">Register</button>
           </div>
-
-          <p class="login-section">Already have an account? <a href="/user/login">Log in</a></p>
 
         </form>
       </div>
