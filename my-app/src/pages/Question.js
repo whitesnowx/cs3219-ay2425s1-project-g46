@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Question.css";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 function Question() {
   const [data, setData] = useState([]);
@@ -171,7 +172,11 @@ function Question() {
             {filteredData.map((item) => (
               <tr key={item.id}>
                 <td>{item.id}</td>
-                <td>{item.title}</td>
+                <td>
+                  <Link to={`/question/${item.id}`}>
+                    {item.title}
+                  </Link>
+                </td>
                 <td>{item.category}</td>
                 <td>{item.complexity}</td>
                 <td>{item.description}</td>

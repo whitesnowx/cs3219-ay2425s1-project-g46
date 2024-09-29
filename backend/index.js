@@ -1,22 +1,14 @@
 const express = require("express");
 const cors = require("cors");
+const db = require("./firebase");
 const app = express();
 const port = 5000;
-const admin = require("firebase-admin");
-const firebaseConfig = require("./firebaseConfig.js");
-const credentials = JSON.parse(JSON.stringify(firebaseConfig));
 
 app.use(cors());
 app.use(express.json());
 
-admin.initializeApp({
-  credential: admin.credential.cert(credentials),
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const db = admin.firestore();
 
 const createText = async (inputText) => {
   const id = inputText;
@@ -76,7 +68,7 @@ app.get("/questions/get", async (req, res) => {
     }
 
     snapshot.forEach((doc) => {
-      console.log(doc.id, "=>", doc.data());
+      // console.log(doc.id, "=>", doc.data());
       data.push({ id: doc.id, ...doc.data() });
     });
     res.status(200).json(data);
@@ -85,6 +77,30 @@ app.get("/questions/get", async (req, res) => {
     res.status(500).json({ message: "Error fetching data from Firebase" });
   }
 });
+
+/**
+ * GET /question/<questionId>
+ * 
+ * Retrieves specified question from questions collection in firebase.
+ * 
+ * Responses:
+ * - 200: Returns data matching the questionId.
+ * - 500: Server error if something goes wrong while fetching data.
+ */
+app.get("/question/:questionId", async (req, res) => {
+  try {
+    const questionId = req.params.questionId;
+    const questionSnap = await db.collection("questions").doc(questionId).get();
+
+    if (!questionSnap.exists) {
+      return res.status(404).send({ message: "Question not found" });
+    }
+
+    res.status(200).send(questionSnap.data());
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+})
 
 /**
  * POST /createQ
