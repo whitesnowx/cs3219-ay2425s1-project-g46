@@ -14,14 +14,33 @@ function Question() {
   });
 
   const [selectedQuestionId, setSelectedQuestionId] = useState(null); // For tracking the question to edit
+  const [error, setError] = useState(''); // State to store error message
+  const [loading, setLoading] = useState(true);
 
   // Fetch user data from API when the component mounts
   useEffect(() => {
+    // Set loading to true before calling API
+    setLoading(true);
+
     fetch("http://localhost:5000/questions/get")
       .then((response) => response.json())
-      .then((data) => setData(data))
-      .catch((error) => console.error("Error fetching data:", error));
+      .then((data) => {
+        setData(data)
+        // Switch loading to false after fetch is completed
+        setLoading(false);
+      })
+      .catch((error) => {
+        setData(null);
+        setLoading(false);
+        console.error("Error fetching data:", error)
+      });
   }, []);
+
+  if (loading) {
+    return (
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+    );
+  }
 
   // Handle filtering from dropdown event for complexity
   const handleChange = (event) => {
@@ -66,6 +85,9 @@ function Question() {
       }
       window.location.reload();
     } catch (error) {
+      if (error.response && error.response.status === 409) {
+        setError('A question with the same title already exists. Please enter a new question.');
+      } 
       console.error("Error submitting form:", error);
     }
   };
@@ -151,6 +173,7 @@ function Question() {
           )}
         </div>
       </form>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
       <div>
         <h1>Questions List</h1>
         {/* dropdown list to filter questions by complexity */}
