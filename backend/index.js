@@ -1,22 +1,14 @@
 const express = require("express");
 const cors = require("cors");
+const { db } = require("./firebase");
 const app = express();
 const port = 5000;
-const admin = require("firebase-admin");
-const firebaseConfig = require("./firebaseConfig.js");
-const credentials = JSON.parse(JSON.stringify(firebaseConfig));
 
 app.use(cors());
 app.use(express.json());
 
-admin.initializeApp({
-  credential: admin.credential.cert(credentials),
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-const db = admin.firestore();
 
 const createText = async (inputText) => {
   const id = inputText;
@@ -99,8 +91,8 @@ app.get("/question/:questionId", async (req, res) => {
   try {
     const questionId = req.params.questionId;
     const questionSnap = await db.collection("questions").doc(questionId).get();
-    
-    if  (!questionSnap.exists) {
+
+    if (!questionSnap.exists) {
       return res.status(404).send({ message: "Question not found" });
     }
 
