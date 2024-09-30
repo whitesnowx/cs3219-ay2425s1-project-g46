@@ -33,7 +33,7 @@ function QuestionPage() {
 
   if (loading) {
     return (
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
     );
   }
 
@@ -44,27 +44,27 @@ function QuestionPage() {
   }
 
   return (
-    <div id="questionContainer" class="container">
+    <div id="questionContainer" className="container">
       {/* Title of Question */}
-      <div class="row">
+      <div className="row">
         <h1 id="questionTitle">{questionData.title}</h1>
       </div>
 
-      <div id="questionTagContainer" class="row">
-        <div class="questionTag">
+      <div id="questionTagContainer" className="row">
+        <div className="questionTag">
           {questionData.category}
         </div>
-        <div class="questionTag">
+        <div className="questionTag">
           {questionData.complexity}
         </div>
       </div>
 
-      <div class="row">
+      <div className="row">
         <p>{questionData.description}</p>
       </div>
 
-      <div class="row">
-        <button id="backBtn" class="btn" onClick={() => navigate(-1)}>Back</button>
+      <div className="row">
+        <button id="backBtn" className="btn" onClick={() => navigate(-1)}>Back</button>
       </div>
     </div>
   )

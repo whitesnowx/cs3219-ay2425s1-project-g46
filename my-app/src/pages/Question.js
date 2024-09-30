@@ -21,8 +21,7 @@ function Question() {
   useEffect(() => {
     // Set loading to true before calling API
     setLoading(true);
-
-    fetch("http://localhost:5000/questions/get")
+    fetch("http://localhost:5000/question/")
       .then((response) => response.json())
       .then((data) => {
         setData(data)
@@ -38,7 +37,7 @@ function Question() {
 
   if (loading) {
     return (
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      <div className="lds-ring"><div></div><div></div><div></div><div></div></div>
     );
   }
 
@@ -70,24 +69,30 @@ function Question() {
     e.preventDefault();
     console.log("Input text before sending:", formData);
     try {
+      // Set loading to true before calling API
+      setLoading(true);
+
       if (selectedQuestionId) {
         const response = await axios.put(
-          `http://localhost:5000/questions/update/${selectedQuestionId}`,
+          `http://localhost:5000/question/update/${selectedQuestionId}`,
           formData
         );
         console.log("Form updated successfully:", response.data);
       } else {
         const response = await axios.post(
-          "http://localhost:5000/questions/add",
+          "http://localhost:5000/question/add",
           formData
         );
         console.log("Form submitted successfully:", response.data);
       }
+
       window.location.reload();
+      setLoading(false);
     } catch (error) {
       if (error.response && error.response.status === 409) {
         setError('A question with the same title already exists. Please enter a new question.');
-      } 
+        setLoading(false);
+      }
       console.error("Error submitting form:", error);
     }
   };
@@ -102,15 +107,20 @@ function Question() {
     });
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',  
+      behavior: 'smooth',
     });
   };
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/questions/delete/${id}`);
+      // Set loading to true before calling API
+      setLoading(true);
+      
+      await axios.delete(`http://localhost:5000/question/delete/${id}`);
       console.log("Question deleted successfully");
+      
       window.location.reload();
+      setLoading(false);
     } catch (error) {
       console.error("Error deleting question:", error);
     }
@@ -210,7 +220,7 @@ function Question() {
                 <td>
                   <div className="action-button-container">
                     <button className="edit-question" onClick={() => handleEdit(item)}>Edit</button>
-                    <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button> 
+                    <button className="delete-question" onClick={() => handleDelete(item.id)}>Delete</button>
                   </div>
                 </td>
               </tr>
