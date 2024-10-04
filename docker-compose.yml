@@ -8,8 +8,8 @@ services:
     ports:
       - 5000:5000 # Maps port 5000 on the host to port 5000 in the container, making the app accessible on the host.
     volumes:
-      - ./backend/question-service:/app/question # Mounts the host directory './backend/question-service' to '/app/question' in the container.
-      - /app/question/node_modules # Anonymous Volume
+      - ./backend/question-service:/app # Mounts the host directory './backend/question-service' to '/app' in the container.
+      - /app/node_modules # Anonymous Volume
     networks:
       - peerprep-network # Connects the question-service to the 'peerprep-network' network.
 
@@ -18,8 +18,8 @@ services:
     ports:
       - 5001:5001 # Maps port 5001 on the host to port 5001 in the container, making the app accessible on the host.
     volumes:
-      - ./backend/user-service:/app/user # Mounts the host directory './backend/user-service' to '/app/user' in the container.
-      - /app/user/node_modules # Anonymous Volume
+      - ./backend/user-service:/app # Mounts the host directory './backend/user-service' to '/app' in the container.
+      - /app/node_modules # Anonymous Volume
     networks:
       - peerprep-network # Connects the user-service to the 'peerprep-network' network.
 
