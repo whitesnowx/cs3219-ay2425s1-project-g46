@@ -6,23 +6,23 @@ services:
   question-service:
     build: ./backend/question-service # Path to the directory containing the Dockerfile for building the question-service image.
     ports:
-      - 5000:5000 # Maps port 3000 on the host to port 3000 in the container, making the app accessible on the host.
+      - 5000:5000 # Maps port 5000 on the host to port 5000 in the container, making the app accessible on the host.
     volumes:
-      - ./backend/question-service:/app # Mounts the host directory './demo-app' to '/app' in the container.
-      - /app/node_modules # Anonymous Volume
+      - ./backend/question-service:/app/question # Mounts the host directory './backend/question-service' to '/app/question' in the container.
+      - /app/question/node_modules # Anonymous Volume
     networks:
-      - demo-network # Connects the demo-app to the 'demo-network' network.
+      - peerprep-network # Connects the question-service to the 'peerprep-network' network.
 
   user-service:
-    build: ./backend/user-service
+    build: ./backend/user-service # Path to the directory containing the Dockerfile for building the user-service image.
     ports:
-      - 5001:5001
+      - 5001:5001 # Maps port 5001 on the host to port 5001 in the container, making the app accessible on the host.
     volumes:
-      - ./backend/user-service:/app
-      - /app/node_modules
+      - ./backend/user-service:/app/user # Mounts the host directory './backend/user-service' to '/app/user' in the container.
+      - /app/user/node_modules # Anonymous Volume
     networks:
-      - demo-network
+      - peerprep-network # Connects the user-service to the 'peerprep-network' network.
 
 networks:
-  demo-network: # Defines a network named 'demo-network'.
+  peerprep-network: # Defines a network named 'peerprep-network'.
     driver: bridge # Uses the bridge driver for the network, which is the default and most common network type in Docker.
