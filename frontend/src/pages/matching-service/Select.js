@@ -81,7 +81,7 @@ function Select() {
       // Emit a message to the server when submitting
       socket.emit("join_matching_queue", updatedFormData);
 
-      naviagte(`/matching/findingmatch`);
+      naviagte(`/matching/findingmatch`, {state: updatedFormData});
     }
   };
 

@@ -49,7 +49,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token) {
         const res = await channel.assertQueue(queueKey);
 
         await channel.sendToQueue(queueKey, Buffer.from(JSON.stringify(message)), {
-            expiration: `10000`
+            expiration: `10000` // Timer for TTL
         });
         console.log(`Message sent to queue ${queueKey}`);
 
