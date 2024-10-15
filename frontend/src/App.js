@@ -8,6 +8,9 @@ import QuestionPage from "./pages/question-service/QuestionPage";
 import PageNotFound from "./components/PageNotFound";
 import Signup from "./pages/user-service/Signup";
 import Login from "./pages/user-service/Login";
+import Select from "./pages/matching-service/Select";
+import FindingMatch from "./pages/matching-service/FindingMatch";
+import MatchFound from "./pages/matching-service/MatchFound";
 import UserRestrictedRoute from "./pages/user-service/utils/UserRestrictedRoute";
 
 /**
@@ -22,6 +25,9 @@ function App() {
         <Route path="/" element={<Question />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/question/:questionId" element={<QuestionPage />} />
+        <Route path="/matching/select" element={<Select />} />
+        <Route path="/matching/findingmatch" element={<FindingMatch />} />
+        <Route path="/matching/matchFound" element={<MatchFound />} />
 
         {/* logged-in users cannot access routes included in 'UserRestrictedRoute' */}
         <Route element={<UserRestrictedRoute />}>
