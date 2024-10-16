@@ -87,7 +87,7 @@ function Select() {
   };
 
   return (
-    <div>
+    <div id="SelectFormContainer">
       <h1>Selection</h1>
       <form onSubmit={handleSubmit}>
         <div className='formGroup'>
