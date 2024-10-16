@@ -11,6 +11,10 @@
   text-align: center; /* Center the text */
 }
 
+#FindingMatchController .criterias {
+  text-transform: capitalize;
+}
+
 #FindingMatchController button {
   border: none;
   background: #2d2d2d;
