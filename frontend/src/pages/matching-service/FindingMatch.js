@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./styles/Select.css";
+import "./styles/FindingMatch.css";
 import socket from "./utils/socket";
 import NavBar from "../../components/NavBar";
 
