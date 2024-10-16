@@ -3,6 +3,7 @@ import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Test from "./pages/Test";
+import Homepage from "./components/Homepage";
 import Question from "./pages/question-service/Question";
 import QuestionPage from "./pages/question-service/QuestionPage";
 import PageNotFound from "./components/PageNotFound";
@@ -27,6 +28,8 @@ function App() {
         <Route path="/" element={<Question />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/question/:questionId" element={<QuestionPage />} />
+
+        <Route path="/home" element={<Homepage />} />
 
         {/* users NOT logged in cannot access routes included in 'LoggedInRoute' */}
         <Route element={<LoggedInRoute />}>
