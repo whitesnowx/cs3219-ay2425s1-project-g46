@@ -212,19 +212,6 @@ const handleSocketIO = (io) => {
 
         // Remove user from RabbitMQ queue (assuming you have the logic for this)
         await removeUserFromQueue(topic, difficultyLevel, email, token);
-    
-        // Check for a match
-        const userList = await checkMatching(topic, difficultyLevel);
-    
-        if (userList) {
-            const [firstUser, secondUser] = userList;
-    
-            // Notify both users about the match
-            io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
-            io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
-            console.log("A match is found");
-
-        }
 
       })
   
