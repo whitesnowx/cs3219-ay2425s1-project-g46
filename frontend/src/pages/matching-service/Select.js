@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import socket from "./utils/socket";
 import "./styles/Select.css";
+import NavBar from "../../components/NavBar";
 
 // Use the correct URL for the Socket.IO connection
 // const socket = io.connect("http://localhost:5002");
@@ -88,6 +89,7 @@ function Select() {
 
   return (
     <div id="SelectFormContainer">
+      <NavBar />
       <h1>Selection</h1>
       <form onSubmit={handleSubmit}>
         <div className='formGroup'>
