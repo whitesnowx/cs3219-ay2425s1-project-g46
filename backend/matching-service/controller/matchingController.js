@@ -140,11 +140,38 @@ async function clearQueue(queueKey) {
     }
 }
 
+async function removeUserFromQueue(topic, difficultyLevel, email, token) {
+    queueKey = topic + " " + difficultyLevel;
+        
+    try {
+        const conn = await amqp.connect(rabbitSettings);
+        const channel = await conn.createChannel();
+        const res = await channel.assertQueue(queueKey);
 
+        const queueStatus = await channel.checkQueue(queueKey);
+        // there should be only 1 person in queue
+        // if > 2 people in queue, will be instantly matched
+        if (queueStatus.messageCount < 2) {
+            const user = await channel.get(queueKey, {noAck: false});
+            if (!user) {
+                console.error("No user in queue.");
+                return;
+            }
 
+            const userData = JSON.parse(user.content.toString());
+            channel.ack(user);
 
-  
+            // Close the channel and connection after processing
+            await channel.close();
+            await conn.close();
 
+            // return user data
+            return userData;
+        }
+    } catch (error) {
+        console.error(`Failed to remove user from queue $(queueKey):`, error)
+    }
+}
 
 const handleSocketIO = (io) => {
     io.on("connection", (socket) => {
@@ -174,6 +201,32 @@ const handleSocketIO = (io) => {
 
         }
       });
+
+      // Listen for cancel_matching event from client
+      socket.on("cancel_matching", async (data) => {
+        console.log(`Cancelling matching for user:`, data);
+        const { topic, difficultyLevel, email, token } = data;
+
+        // Store the socket ID for the user
+        socketMap[email] = socket.id;
+
+        // Remove user from RabbitMQ queue (assuming you have the logic for this)
+        await removeUserFromQueue(topic, difficultyLevel, email, token);
+    
+        // Check for a match
+        const userList = await checkMatching(topic, difficultyLevel);
+    
+        if (userList) {
+            const [firstUser, secondUser] = userList;
+    
+            // Notify both users about the match
+            io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
+            io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
+            console.log("A match is found");
+
+        }
+
+      })
   
       // Handle disconnection
       socket.on("disconnect", () => {
