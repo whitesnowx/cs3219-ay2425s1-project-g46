@@ -26,7 +26,9 @@ function FindingMatch() {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
                     clearInterval(timer);  // Stop the timer when it reaches zero
-                    setMatchStatus("No match found"); // Set status when timer reaches 0
+                    if (matchStatus !== "Matching cancelled") {
+                        setMatchStatus("No match found"); // Set status when timer reaches 0
+                    }
                     console.log("Matching failed due to timeout");
                     return 0;
                 }
@@ -108,6 +110,7 @@ function FindingMatch() {
 
     // Function to cancel the matching process
     const handleCancel = () => {
+        setTimeLeft(0);
         setMatchStatus("Matching cancelled");
         console.log("Cancelling match...");
         socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username });
