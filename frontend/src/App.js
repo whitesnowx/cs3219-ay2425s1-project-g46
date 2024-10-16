@@ -11,7 +11,8 @@ import Login from "./pages/user-service/Login";
 import Select from "./pages/matching-service/Select";
 import FindingMatch from "./pages/matching-service/FindingMatch";
 import MatchFound from "./pages/matching-service/MatchFound";
-import UserRestrictedRoute from "./pages/user-service/utils/UserRestrictedRoute";
+import LoggedInRoute from "./pages/user-service/utils/LoggedInRoute";
+import LoggedOutRoute from "./pages/user-service/utils/LoggedOutRoute";
 
 /**
  * 
@@ -22,15 +23,20 @@ function App() {
   return (
     <Router>
       <Routes>
+
         <Route path="/" element={<Question />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/question/:questionId" element={<QuestionPage />} />
-        <Route path="/matching/select" element={<Select />} />
-        <Route path="/matching/findingmatch" element={<FindingMatch />} />
-        <Route path="/matching/matchFound" element={<MatchFound />} />
 
-        {/* logged-in users cannot access routes included in 'UserRestrictedRoute' */}
-        <Route element={<UserRestrictedRoute />}>
+        {/* users NOT logged in cannot access routes included in 'LoggedInRoute' */}
+        <Route element={<LoggedInRoute />}>
+          <Route path="/matching/select" element={<Select />} />
+          <Route path="/matching/findingmatch" element={<FindingMatch />} />
+          <Route path="/matching/matchFound" element={<MatchFound />} />
+        </Route>
+
+        {/* logged-in users cannot access routes included in 'LoggedOutRoute' */}
+        <Route element={<LoggedOutRoute />}>
           <Route path="/user/signup" element={<Signup />}></Route>
           <Route path="/user/login" element={<Login />}></Route>
         </Route>
