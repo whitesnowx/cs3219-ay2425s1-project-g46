@@ -108,9 +108,14 @@ function FindingMatch() {
 
     // Function to cancel the matching process
     const handleCancel = () => {
+        setMatchStatus("Matching cancelled");
         console.log("Cancelling match...");
         socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username });
+    };
 
+    // Function to bring user back to criteria selection
+    const handleBackToSelect = () => {
+        console.log("Navigating back to criteria selection");
         navigate("/matching/select");
     };
 
@@ -119,12 +124,14 @@ function FindingMatch() {
             <NavBar />
             <div id="FindingMatchController">
                 {matchStatus === "" ? ( // Show typing and timer when match status is empty
+                    // when user is in queue
                     <>
                         <h1>{displayedText}</h1>
                         <h1>Time left: {timeLeft} seconds</h1> {/* Display the timer */}
                         <button onClick={handleCancel}>Cancel</button>
                     </>
                 ) : (
+                    // when user is NOT in queue
                     <>
                         {isAnyDifficulty ?
                         <h1 className="criterias">Topic: {topic}, Difficulty: Any</h1>
@@ -133,7 +140,7 @@ function FindingMatch() {
                         <h1>{matchStatus}</h1> {/* Show match status when match is found or time runs out */}
                         <button className="criterias" onClick={handleRetry}>Retry with Topic: {topic}, Difficulty: {difficultyLevel}</button>
                         <button onClick={handleRetryTopic}>Retry with Topic: {topic}, Difficulty: Any</button>
-                        <button onClick={handleCancel}>Back to Criteria Selection</button>
+                        <button onClick={handleBackToSelect}>Back to Criteria Selection</button>
                     </>
                 )}
             </div>
