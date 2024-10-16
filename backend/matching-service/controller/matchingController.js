@@ -36,11 +36,11 @@ const io = new Server(server, {
 });
   
 
-async function addUserToQueue(topic, difficultyLevel, email, token) {
+async function addUserToQueue(topic, difficultyLevel, email, token, username) {
 
     queueKey = topic + " " + difficultyLevel;
 
-    const message = {"email": email, "token": token};
+    const message = {"email": email, "token": token, "username": username};
 
     try{
 
@@ -180,13 +180,13 @@ const handleSocketIO = (io) => {
       // Listen for the join_matching_queue event from the client
       socket.on("join_matching_queue", async (data) => {
         console.log(`New request for matching:`, data);
-        const { topic, difficultyLevel, email, token } = data;
+        const { topic, difficultyLevel, email, token, username } = data;
   
         // Store the socket ID for the user
         socketMap[email] = socket.id;
         
         // Add user to RabbitMQ queue (assuming you have the logic for this)
-        await addUserToQueue(topic, difficultyLevel, email, token);
+        await addUserToQueue(topic, difficultyLevel, email, token, username);
   
         // Check for a match
         const userList = await checkMatching(topic, difficultyLevel);

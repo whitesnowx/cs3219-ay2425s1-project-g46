@@ -76,6 +76,7 @@ function Select() {
         ...formData,
         email: sessionStorage.getItem("email"),
         token: sessionStorage.getItem("token"),
+        username: sessionStorage.getItem("username")
       };
 
       // Emit a message to the server when submitting
