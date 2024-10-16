@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import "./styles/Select.css";
+import "./styles/FindingMatch.css";
 import socket from "./utils/socket";
 import NavBar from "../../components/NavBar";
 
@@ -93,6 +93,13 @@ function FindingMatch() {
         
     };
 
+    // Function to cancel the matching process
+    const handleCancel = () => {
+        console.log("Cancelling match...");
+        socket.emit("cancel_matching", { topic, difficultyLevel, email, token });
+
+        navigate("/matching/select");
+    };
 
     return (
         <div>
@@ -102,7 +109,7 @@ function FindingMatch() {
                     <>
                         <h1>{displayedText}</h1>
                         <h1>Time left: {timeLeft} seconds</h1> {/* Display the timer */}
-                        <button>Cancel</button>
+                        <button onClick={handleCancel}>Cancel</button>
                     </>
                 ) : (
                     <>
