@@ -26,7 +26,9 @@ function FindingMatch() {
             setTimeLeft((prevTime) => {
                 if (prevTime <= 1) {
                     clearInterval(timer);  // Stop the timer when it reaches zero
-                    setMatchStatus("No match found"); // Set status when timer reaches 0
+                    if (matchStatus !== "Matching cancelled") {
+                        setMatchStatus("No match found"); // Set status when timer reaches 0
+                    }
                     console.log("Matching failed due to timeout");
                     return 0;
                 }
@@ -90,24 +92,24 @@ function FindingMatch() {
         console.log("Retrying match...");
 
         setIsAnyDifficulty(false);
-        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username });
-        
+        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny:false });
     };
 
-    // Function to reset the matching process (reset timer and animation)
-    const handleRetryTopic = () => {
+    // Function to reset the matching process with any difficulty levels (reset timer and animation)
+    const handleRetryWithAnyDifficultyLevel = () => {
         setMatchStatus(""); // Reset match status
         setTimeLeft(10); // Reset timer to 10 seconds
         setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
         console.log("Retrying match...");
 
         setIsAnyDifficulty(true);
-        socket.emit("join_matching_queue", { topic, topicOnlyDifficulty, email, token, username });
+        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny:true });
     };
     
 
     // Function to cancel the matching process
     const handleCancel = () => {
+        setTimeLeft(0);
         setMatchStatus("Matching cancelled");
         console.log("Cancelling match...");
         socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username });
@@ -139,7 +141,7 @@ function FindingMatch() {
                         }
                         <h1>{matchStatus}</h1> {/* Show match status when match is found or time runs out */}
                         <button className="criterias" onClick={handleRetry}>Retry with Topic: {topic}, Difficulty: {difficultyLevel}</button>
-                        <button onClick={handleRetryTopic}>Retry with Topic: {topic}, Difficulty: Any</button>
+                        <button onClick={handleRetryWithAnyDifficultyLevel}>Retry with Topic: {topic}, Difficulty: Any</button>
                         <button onClick={handleBackToSelect}>Back to Criteria Selection</button>
                     </>
                 )}
