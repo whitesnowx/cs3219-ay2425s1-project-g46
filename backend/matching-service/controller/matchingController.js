@@ -131,13 +131,12 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 
             }
 
-            
+            // Close the channel and connection after processing
+            await channel.close();
+            await conn.close();
 
-        
         }
-        // Close the channel and connection after processing
-        await channel.close();
-        await conn.close();
+
         return null;
     } catch(err) {
         console.error(`Error -> ${err}`);
@@ -230,7 +229,7 @@ const handleSocketIO = (io) => {
                 console.error(error);
             }
             
-        } else {
+        } else if (isAny) {
             console.log("I am here");
             const mixUserList = await checkMatchingAnyQueue(topic, difficultyLevel, email, token, username, isAny);
 
