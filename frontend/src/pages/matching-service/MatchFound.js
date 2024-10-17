@@ -15,7 +15,7 @@ function MatchFound() {
       <NavBar />
       <div id="MatchFoundController">
         <h1>Match Found</h1>
-        <p>You have been matched with {matchedData.matchedData.username}</p>
+        <p>You have been matched with {matchedData.matchedData.username}!</p>
       </div>
     </div>
   );
