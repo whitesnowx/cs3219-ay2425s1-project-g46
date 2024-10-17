@@ -1,6 +1,7 @@
 // Author(s): Andrew, Xinyi
 require('dotenv').config();
 const connectToRabbitMQ = require("../rabbitMQ/config.js");
+const { createMatch } = require('./matchController.js');
 
 let socketMap = {};
 
@@ -160,7 +161,13 @@ const handleSocketIO = (io) => {
             io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
             io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
             console.log("A match is found");
-
+            
+            const { status, msg, error } = createMatch(firstUser.email, secondUser.email, topic, difficultyLevel);
+            if (status == 200 && msg) {
+                console.log(msg);
+            } else if (status == 500 && error) {
+                console.error(error);
+            }
         }
       });
 
