@@ -108,7 +108,8 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
                     return;
                 }
                 
-                
+                // check for other user in "any" queue
+                await channel.assertQueue(topic + " any");
                 const secondUser =  await channel.get((topic + " any"), {noAck: false});
                 if (!secondUser) {
                     console.error("Failed to retrieve the second user.");
@@ -130,10 +131,9 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
                 return userList;
 
             }
-
             // Close the channel and connection after processing
-            await channel.close();
-            await conn.close();
+            // await channel.close();
+            // await conn.close();
 
         }
 
@@ -229,7 +229,7 @@ const handleSocketIO = (io) => {
                 console.error(error);
             }
             
-        } else if (isAny) {
+        } else {
             console.log("I am here");
             const mixUserList = await checkMatchingAnyQueue(topic, difficultyLevel, email, token, username, isAny);
 
