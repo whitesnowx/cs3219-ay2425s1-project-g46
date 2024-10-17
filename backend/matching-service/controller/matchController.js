@@ -1,5 +1,5 @@
 // Author(s): Calista, Xiu Jia, Xue Ling
-const db = require("../db/firebase");
+const db = require("../config/firebase");
 const matchCollection = db.collection("matches");
 
 /**
