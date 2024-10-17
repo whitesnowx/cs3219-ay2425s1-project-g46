@@ -1,40 +1,8 @@
 // Author(s): Andrew, Xinyi
 require('dotenv').config();
-const express = require("express");
-const app = express();
-const db = require("../db/firebase");
-const userCollection = db.collection("users");
-const amqp = require('amqplib');
-const http = require("http");
-const {Server} = require("socket.io");
-const cors = require("cors");
+const connectToRabbitMQ = require("../rabbitMQ/config.js");
 
-// RabbitMQ connection settings
-const rabbitSettings = {
-    protocol: 'amqp',
-    hostname: 'localhost',
-    port: 5672,
-    username: 'guest', 
-    password: process.env.rabbitPassword, 
-    vhost: '/',
-    authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
-}
-
-// const queueTimersMap = {};
-
-app.use(cors());
 let socketMap = {};
-
-
-const server = http.createServer(app);
-// Initialize the Socket.IO server
-const io = new Server(server, {
-    cors: {
-      origin: "*", // Allow all origins, adjust as needed
-      methods: ["GET", "POST"],
-    },
-});
-  
 
 async function addUserToQueue(topic, difficultyLevel, email, token, username, isAny) {
 
@@ -48,9 +16,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
     const message = {"email": email, "token": token, "username": username};
 
     try{
-
-        const conn = await amqp.connect(rabbitSettings);
-        const channel = await conn.createChannel();
+        const { conn, channel } = await connectToRabbitMQ();
         const res = await channel.assertQueue(queueKey);
 
         await channel.sendToQueue(queueKey, Buffer.from(JSON.stringify(message)), {
@@ -78,8 +44,7 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
     }
     
     try{
-        const conn = await amqp.connect(rabbitSettings);
-        const channel = await conn.createChannel();
+        const { conn, channel } = await connectToRabbitMQ();
         const res = await channel.assertQueue(queueKey);
 
         const queueStatus = await channel.checkQueue(queueKey);
@@ -181,8 +146,7 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 async function clearQueue(queueKey) {
     try {
         console.log(`Clearing queue ${queueKey}`);
-        const conn = await amqp.connect(rabbitSettings);
-        const channel = await conn.createChannel();
+        const { conn, channel } = await connectToRabbitMQ();
         await channel.assertQueue(queueKey);
 
         // Loop to clear all messages in the queue
@@ -204,8 +168,7 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token) {
     queueKey = topic + " " + difficultyLevel;
         
     try {
-        const conn = await amqp.connect(rabbitSettings);
-        const channel = await conn.createChannel();
+        const { conn, channel } = await connectToRabbitMQ();
         const res = await channel.assertQueue(queueKey);
 
         const queueStatus = await channel.checkQueue(queueKey);
