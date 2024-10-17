@@ -96,8 +96,7 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
     try{
         for (level in allDifficultyLevels) {
             queueKey = topic + " " + allDifficultyLevels[level];
-            const conn = await amqp.connect(rabbitSettings);
-            const channel = await conn.createChannel();
+            const { conn, channel } = await connectToRabbitMQ();
             const res = await channel.assertQueue(queueKey);
 
             const queueStatus = await channel.checkQueue(queueKey);
@@ -131,12 +130,13 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 
             }
 
-            // Close the channel and connection after processing
-            await channel.close();
-            await conn.close();
+            
 
         
         }
+        // Close the channel and connection after processing
+        await channel.close();
+        await conn.close();
         return null;
     } catch(err) {
         console.error(`Error -> ${err}`);
