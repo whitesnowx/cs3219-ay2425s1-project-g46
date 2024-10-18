@@ -1,5 +1,5 @@
 const db = require("../db/firebase");
-const collaborationCollection = db.collection("collaborations");
+const collaborationCollection = db.collection("collaborationsv2");
 
 // // 1. Create a new blank page for collaboration
 // const createBlankPage = async (req, res) => {
