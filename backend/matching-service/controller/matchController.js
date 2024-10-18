@@ -10,18 +10,26 @@ const matchCollection = db.collection("matches");
  * Responses:
  * - 500: Server error if something goes wrong while fetching data.
  */
-const createMatch = async (user1, user2, category, complexity) => {
+const createMatch = async (user1, user2) => {
   try {
     const matchJson = {
-      user1: user1,
-      user2: user2,
-      category: category,
-      complexity: complexity,
+      user1: {
+        email: user1.email,
+        category: user1.topic,
+        complexity: user1.difficultyLevel,
+        isAny: user1.isAny
+      },
+      user2: {
+        email: user2.email,
+        category: user2.topic,
+        complexity: user2.difficultyLevel,
+        isAny: user2.isAny
+      },
       datetime: new Date().toLocaleString("en-SG")
     };
 
     const response = await matchCollection.doc().set(matchJson);
-  
+
     return { status: 200, msg: "Match created successfully", response };
   } catch (error) {
     return { status: 500, error: error.message };

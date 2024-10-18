@@ -36,7 +36,7 @@ const handleSocketIO = (io) => {
         io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
         console.log("A match is found");
 
-        const { status, msg, error } = createMatch(firstUser.email, secondUser.email, topic, difficultyLevel);
+        const { status, msg, error } = createMatch(firstUser, secondUser);
         if (status == 200 && msg) {
           console.log(msg);
         } else if (status == 500 && error) {
@@ -55,7 +55,7 @@ const handleSocketIO = (io) => {
           io.to(socketMap[secondMixUser.email]).emit("match_found", { matchedData: firstMixUser });
           console.log("A match is found");
 
-          const { status, msg, error } = createMatch(firstMixUser.email, secondMixUser.email, topic, difficultyLevel);
+          const { status, msg, error } = createMatch(firstMixUser, secondMixUser);
           if (status == 200 && msg) {
             console.log(msg);
           } else if (status == 500 && error) {

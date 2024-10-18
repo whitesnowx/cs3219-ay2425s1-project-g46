@@ -10,7 +10,14 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
-  const message = { "email": email, "token": token, "username": username };
+  const message = {
+    "email": email,
+    "token": token,
+    "username": username,
+    "topic": topic,
+    "difficultyLevel": difficultyLevel,
+    "isAny": isAny
+  };
 
   try {
     const { conn, channel } = await connectToRabbitMQ();
