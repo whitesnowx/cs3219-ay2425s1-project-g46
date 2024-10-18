@@ -70,13 +70,13 @@ const handleSocketIO = (io) => {
     // Listen for cancel_matching event from client
     socket.on("cancel_matching", async (data) => {
       console.log(`Cancelling matching for user:`, data);
-      const { topic, difficultyLevel, email, token } = data;
+      const { topic, difficultyLevel, email, token, username, isAny } = data;
 
       // Store the socket ID for the user
       socketMap[email] = socket.id;
 
       // Remove user from RabbitMQ queue (assuming you have the logic for this)
-      await removeUserFromQueue(topic, difficultyLevel, email, token);
+      await removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny);
 
     })
 

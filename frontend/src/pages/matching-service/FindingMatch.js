@@ -4,7 +4,6 @@ import "./styles/FindingMatch.css";
 import socket from "./utils/socket";
 import NavBar from "../../components/NavBar";
 
-
 function FindingMatch() {
 
 
@@ -18,7 +17,30 @@ function FindingMatch() {
     const location = useLocation(); // Use useLocation to retrieve state
     const { topic, difficultyLevel, email, token, username } = location.state || {}; // Destructure updatedFormData from state
     const [isAnyDifficulty, setIsAnyDifficulty] = useState(false);
-    const topicOnlyDifficulty = "any";
+
+    // check for backtrack, navigate back to criteria selection if user confirms action,
+    // otherwise stay on page
+    window.onpopstate = (event) => {
+        event.preventDefault();
+        var confirmation = window.confirm("You are exiting the matching queue, continue?");
+        if (confirmation) {
+            socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
+            location.state = undefined;
+            navigate("/matching/select");
+        } else {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+    }
+
+    // detect changes for isAnyDifficulty (used for cancelling queue)
+    useEffect(() => {
+        setIsAnyDifficulty((prevState) => !prevState);
+    }, []);
+
+    useEffect(() => {
+        console.log("changing isAnyDifficulty", isAnyDifficulty);
+    }, [isAnyDifficulty]);
 
     // Timer effect
     useEffect(() => {
@@ -92,7 +114,7 @@ function FindingMatch() {
         console.log("Retrying match...");
 
         setIsAnyDifficulty(false);
-        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny:false });
+        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny: false });
     };
 
     // Function to reset the matching process with any difficulty levels (reset timer and animation)
@@ -100,10 +122,10 @@ function FindingMatch() {
         setMatchStatus(""); // Reset match status
         setTimeLeft(10); // Reset timer to 10 seconds
         setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
-        console.log("Retrying match...");
+        console.log("Retrying match with any difficulty...");
 
         setIsAnyDifficulty(true);
-        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny:true });
+        socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny: true });
     };
     
 
@@ -112,7 +134,7 @@ function FindingMatch() {
         setTimeLeft(0);
         setMatchStatus("Matching cancelled");
         console.log("Cancelling match...");
-        socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username });
+        socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
     };
 
     // Function to bring user back to criteria selection

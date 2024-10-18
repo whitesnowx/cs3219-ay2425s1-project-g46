@@ -10,6 +10,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
+  console.log("q key, isAny", queueKey, isAny);
   const message = {
     "email": email,
     "token": token,
@@ -167,8 +168,11 @@ async function clearQueue(queueKey) {
   }
 }
 
-async function removeUserFromQueue(topic, difficultyLevel, email, token) {
+async function removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny) {
   queueKey = topic + " " + difficultyLevel;
+  if (isAny) {
+    queueKey = topic + " any";
+  }
 
   try {
     const { conn, channel } = await connectToRabbitMQ();
