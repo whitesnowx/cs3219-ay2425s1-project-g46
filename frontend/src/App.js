@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Test from "./pages/Test";
 import Question from "./pages/question-service/Question";
 import QuestionPage from "./pages/question-service/QuestionPage";
+import Collaboration from "./pages/collaboration-service/Collaboration";
 import PageNotFound from "./components/PageNotFound";
 import Signup from "./pages/user-service/Signup";
 import Login from "./pages/user-service/Login";
@@ -22,6 +23,8 @@ function App() {
         <Route path="/" element={<Question />} />
         <Route path="/Test" element={<Test />} />
         <Route path="/question/:questionId" element={<QuestionPage />} />
+
+        <Route path="/collaboration" element={<Collaboration />} /> 
 
         {/* logged-in users cannot access routes included in 'UserRestrictedRoute' */}
         <Route element={<UserRestrictedRoute />}>

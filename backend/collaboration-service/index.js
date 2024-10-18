@@ -6,24 +6,17 @@ const cors = require("cors");
 const app = express();
 const port = process.env.PORT;
 
-// import routes
-const userRoute = require("./routes/userRoute.js"); 
-const collaborationRoute = require("./routes/collaborationRoute.js"); // Adjust path as necessary
+const collaborationRoute = require("./routes/collaborationRoute");
 
 app.use(cors());
 app.use(express.json());
+
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// default API from expressJS
-app.get("/", (req, res) => {
-  res.send("Welcome to the Express server!");
-});
-
 // Routes
-app.use("/user", userRoute);
 app.use("/collaboration", collaborationRoute);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
-
