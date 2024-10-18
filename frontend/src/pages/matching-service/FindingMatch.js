@@ -18,6 +18,21 @@ function FindingMatch() {
     const { topic, difficultyLevel, email, token, username } = location.state || {}; // Destructure updatedFormData from state
     const [isAnyDifficulty, setIsAnyDifficulty] = useState(false);
 
+    // check for backtrack, navigate back to criteria selection if user confirms action,
+    // otherwise stay on page
+    window.onpopstate = (event) => {
+        event.preventDefault();
+        var confirmation = window.confirm("You are exiting the matching queue, continue?");
+        if (confirmation) {
+            socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
+            location.state = undefined;
+            navigate("/matching/select");
+        } else {
+            event.stopImmediatePropagation();
+            event.preventDefault();
+        }
+    }
+
     // detect changes for isAnyDifficulty (used for cancelling queue)
     useEffect(() => {
         setIsAnyDifficulty((prevState) => !prevState);
