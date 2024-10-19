@@ -129,9 +129,22 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
         }
         
         const userInPriorityQueueData = JSON.parse(userInPriorityQueue.content.toString());
-        channel.ack(userInPriorityQueue);
 
-        const queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
+        console.log(`Current email: ${email}   PriorityQueueUser: ${userInPriorityQueueData.email}`);
+        if (userInPriorityQueueData.email ===  email && !userInPriorityQueueData.isAny) {          
+          channel.nack(userInPriorityQueue, false, true);
+          return null;
+        }
+
+        channel.ack(userInPriorityQueue);
+        
+        let queueKey = "";
+        if (userInPriorityQueueData.isAny) {
+          queueKey = `${userInPriorityQueueData.topic} any`;
+        } else {
+          queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
+        }
+        
 
         
         const chosenUser = await channel.get(queueKey, { noAck: false });
@@ -161,6 +174,8 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 
         channel.ack(chosenUser);
         channel.ack(secondUser);
+
+        console.log("Returnnnnnnn");
 
         return userList;
 
