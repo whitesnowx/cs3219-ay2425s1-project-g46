@@ -10,7 +10,16 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
-  const message = {"topic": topic, "difficultyLevel": difficultyLevel, "email": email, "token": token, "username": username, "isAny": isAny };
+
+  console.log("q key, isAny", queueKey, isAny);
+  const message = {
+    "email": email,
+    "token": token,
+    "username": username,
+    "topic": topic,
+    "difficultyLevel": difficultyLevel,
+    "isAny": isAny
+  };
 
   try {
     
@@ -111,8 +120,6 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
 }
 
 async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny) {
-  const allDifficultyLevels = ["easy", "medium", "hard"];
-
   try {
     
     const queuePriorityKey = topic + " priority";
@@ -129,9 +136,22 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
         }
         
         const userInPriorityQueueData = JSON.parse(userInPriorityQueue.content.toString());
-        channel.ack(userInPriorityQueue);
 
-        const queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
+        console.log(`Current email: ${email}   PriorityQueueUser: ${userInPriorityQueueData.email}`);
+        if (userInPriorityQueueData.email ===  email ) {          
+          channel.nack(userInPriorityQueue, false, true);
+          return null;
+        }
+
+        channel.ack(userInPriorityQueue);
+        
+        let queueKey = "";
+        if (userInPriorityQueueData.isAny) {
+          queueKey = `${userInPriorityQueueData.topic} any`;
+        } else {
+          queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
+        }
+        
 
         
         const chosenUser = await channel.get(queueKey, { noAck: false });
@@ -161,6 +181,8 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 
         channel.ack(chosenUser);
         channel.ack(secondUser);
+
+        console.log("Returnnnnnnn");
 
         return userList;
 
@@ -198,7 +220,7 @@ async function clearQueue(queueKey) {
 }
 
 async function removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny) {
-  queueKey = topic + " " + difficultyLevel;
+  let queueKey = topic + " " + difficultyLevel;
   if (isAny) {
     queueKey = topic + " any";
   }
@@ -232,11 +254,56 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token, usernam
   }
 }
 
+
+async function removeUserFromPriorityQueue(topic, difficultyLevel, email, token, username, isAny) {
+  const queueKey = topic + " priority";
+  console.log("SDSDSDSDSD");
+
+  try {
+    const { conn, channel } = await connectToRabbitMQ();
+    const res = await channel.assertQueue(queueKey);
+
+    let found = false;
+    
+    // Loop through the queue messages
+    while (!found) {
+      const message = await channel.get(queueKey, { noAck: false });
+
+      if (message) {
+        let user = JSON.parse(message.content.toString());
+        console.log(`useremail: ${user.email}     email: ${email}`);
+
+        if (user.email === email) {
+          console.log("Correct user found. Removing from queue.");
+          channel.ack(message);  // Acknowledge (remove) the message from the queue
+          found = true;
+        } else {
+          console.log("Incorrect user. Requeuing the message.");
+          channel.nack(message, false, true);  // Requeue the message to keep it in the queue
+        }
+
+      } else {
+        console.log("No more messages in the queue.");
+        break;
+      }
+    }
+
+    // Close the channel and connection after processing
+    await channel.close();
+    await conn.close();
+    
+  } catch (error) {
+    console.error(`Failed to remove user from queue ${queueKey}:`, error);
+  }
+}
+
+
 // Export match functions
 module.exports = {
   addUserToQueue,
   checkMatchingSameQueue,
   checkMatchingAnyQueue,
   clearQueue,
-  removeUserFromQueue
+  removeUserFromQueue,
+  removeUserFromPriorityQueue
 };
