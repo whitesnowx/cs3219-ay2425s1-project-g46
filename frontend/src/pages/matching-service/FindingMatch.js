@@ -35,9 +35,7 @@ function FindingMatch() {
 
     // check for refresh, allow user to stay on page regardless if refresh is cancelled or confirmed
     window.onbeforeunload = (event) => {
-      event.preventDefault();
       socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
-      return "random string to allow window alert to come up";
     }
 
     // detect changes for isAnyDifficulty (used for cancelling queue)
