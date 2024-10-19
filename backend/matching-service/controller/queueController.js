@@ -10,6 +10,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
+
   console.log("q key, isAny", queueKey, isAny);
   const message = {
     "email": email,
@@ -21,13 +22,23 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
   };
 
   try {
+    
+    const queuePriorityKey = topic + " priority";
     const { conn, channel } = await connectToRabbitMQ();
     const res = await channel.assertQueue(queueKey);
+    await channel.assertQueue(queuePriorityKey);
+    await channel.assertQueue(`${topic} any`); // Ensure that there is alawys "any" queue
 
     await channel.sendToQueue(queueKey, Buffer.from(JSON.stringify(message)), {
       expiration: `10000` // Timer for TTL
     });
     console.log(`Message sent to queue ${queueKey}`);
+
+    
+    await channel.sendToQueue(queuePriorityKey, Buffer.from(JSON.stringify(message)), {
+      expiration: `10000` // Timer for TTL
+    });
+    console.log(`Message sent to queue ${queuePriorityKey}`);
 
     // Close the channel and connection after processing
     await channel.close();
@@ -42,7 +53,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 async function checkMatchingSameQueue(topic, difficultyLevel, email, token, username, isAny) {
 
   let queueKey = topic + " " + difficultyLevel;
-  console.log(`is any: ${isAny}`);
+  
   if (isAny) {
     queueKey = topic + " " + "any";
 
@@ -51,10 +62,13 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
   try {
     const { conn, channel } = await connectToRabbitMQ();
     const res = await channel.assertQueue(queueKey);
+    
+    const queueAnyKey = `${topic} any`;
+    const queueAnyStatus = await channel.checkQueue(queueAnyKey);
 
     const queueStatus = await channel.checkQueue(queueKey);
     console.log(`${queueKey} currently has ${queueStatus.messageCount} users`);
-    if (queueStatus.messageCount >= 2) {
+    if (queueStatus.messageCount >= 2 || (queueStatus.messageCount >= 1 && queueAnyStatus.messageCount >= 1)) {
 
       const firstUser = await channel.get(queueKey, { noAck: false });
       if (!firstUser) {
@@ -62,12 +76,22 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
         return;
       }
 
-      const secondUser = await channel.get(queueKey, { noAck: false });
+      let secondUser = await channel.get(queueKey, { noAck: false });
       if (!secondUser) {
         console.error("Failed to retrieve the second user.");
-        channel.nack(firstUser, false, true); //Requeue the first user
-        return;
+        console.log("Now checking on the 'any' queue");
+        const queueAnyStatus = await channel.checkQueue(queueAnyKey);
+        if (queueAnyStatus.messageCount > 0) {
+          secondUser = await channel.get(queueAnyKey, {noAck: false});
+          if (!secondUser) {
+            console.error("Failed to retrieve the second user from 'any' queue.")
+            channel.nack(firstUser, false, true); //Requeue the first user
+            return;
+          } 
+        }
+
       }
+
 
       const userList = [];
 
@@ -96,48 +120,77 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
 }
 
 async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny) {
-  allDifficultyLevels = ["easy", "medium", "hard"];
+  const allDifficultyLevels = ["easy", "medium", "hard"];
 
   try {
-    for (level in allDifficultyLevels) {
-      queueKey = topic + " " + allDifficultyLevels[level];
+    
+    const queuePriorityKey = topic + " priority";
+    while (true) {
       const { conn, channel } = await connectToRabbitMQ();
-      const res = await channel.assertQueue(queueKey);
+      const res = await channel.assertQueue(queuePriorityKey);
 
-      const queueStatus = await channel.checkQueue(queueKey);
-      if (queueStatus.messageCount > 0) {
-        const firstUser = await channel.get(queueKey, { noAck: false });
-        if (!firstUser) {
+      const queuePriorityStatus = await channel.checkQueue(queuePriorityKey);
+      if (queuePriorityStatus.messageCount > 0) {
+        const userInPriorityQueue = await channel.get(queuePriorityKey, { noAck: false });
+        if (!userInPriorityQueue) {
           console.error("Failed to retrieve the first user.");
           return;
         }
+        
+        const userInPriorityQueueData = JSON.parse(userInPriorityQueue.content.toString());
 
-        // check for other user in "any" queue
+        console.log(`Current email: ${email}   PriorityQueueUser: ${userInPriorityQueueData.email}`);
+        if (userInPriorityQueueData.email ===  email && !userInPriorityQueueData.isAny) {          
+          channel.nack(userInPriorityQueue, false, true);
+          return null;
+        }
+
+        channel.ack(userInPriorityQueue);
+        
+        let queueKey = "";
+        if (userInPriorityQueueData.isAny) {
+          queueKey = `${userInPriorityQueueData.topic} any`;
+        } else {
+          queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
+        }
+        
+
+        
+        const chosenUser = await channel.get(queueKey, { noAck: false });
+        if (!chosenUser || !chosenUser.content) {
+          continue;
+        } else if (JSON.parse(chosenUser.content.toString()).email != userInPriorityQueueData.email) {
+          channel.nack(chosenUser, false, true);
+          continue;
+        }
+
+        console.log("Found the user");
+
         await channel.assertQueue(topic + " any");
         const secondUser = await channel.get((topic + " any"), { noAck: false });
-        if (!secondUser) {
+        if (!secondUser || !secondUser.content) {
           console.error("Failed to retrieve the second user.");
-          channel.nack(firstUser, false, true); //Requeue the first user
+          channel.nack(chosenUser, false, true); 
           return;
         }
 
         const userList = [];
-
-        const firstUserData = JSON.parse(firstUser.content.toString());
+        const chosenUserData = JSON.parse(chosenUser.content.toString());
         const secondUserData = JSON.parse(secondUser.content.toString());
 
-        userList.push(firstUserData);
+        userList.push(chosenUserData);
         userList.push(secondUserData);
 
-        channel.ack(firstUser);
+        channel.ack(chosenUser);
         channel.ack(secondUser);
+
+        console.log("Returnnnnnnn");
 
         return userList;
 
+      } else {
+        break;
       }
-      // Close the channel and connection after processing
-      // await channel.close();
-      // await conn.close();
 
     }
 

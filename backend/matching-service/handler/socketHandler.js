@@ -26,15 +26,17 @@ const handleSocketIO = (io) => {
       await addUserToQueue(topic, difficultyLevel, email, token, username, isAny);
 
       // Check for a match
-      const userList = await checkMatchingSameQueue(topic, difficultyLevel, email, token, username, isAny);
+      if (!isAny) {
+        const userList = await checkMatchingSameQueue(topic, difficultyLevel, email, token, username, isAny);
 
-      if (userList) {
-        const [firstUser, secondUser] = userList;
+        if (userList) {
+          const [firstUser, secondUser] = userList;
 
-        // Notify both users about the match
-        io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
-        io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
-        console.log("A match is found");
+          // Notify both users about the match
+          io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
+          io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
+          console.log("A match is found");
+
 
         const { status, msg, error } = createMatch(firstUser, secondUser);
         if (status == 200 && msg) {
@@ -43,8 +45,9 @@ const handleSocketIO = (io) => {
           console.error(error);
         }
 
+        }
+      
       } else {
-        console.log("I am here");
         const mixUserList = await checkMatchingAnyQueue(topic, difficultyLevel, email, token, username, isAny);
 
         if (mixUserList) {

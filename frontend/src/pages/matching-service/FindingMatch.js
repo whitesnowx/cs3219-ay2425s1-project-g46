@@ -56,7 +56,7 @@ function FindingMatch() {
                 }
                 return prevTime - 1;
             });
-        }, 1000); // Update every second
+        }, 1500); // Update every second
 
         return () => clearInterval(timer); // Cleanup timer on component unmount
     }, [matchStatus]); // Restart the timer whenever matchStatus or animationKey changes

@@ -40,18 +40,6 @@ function Select() {
     setFormData(prev => ({ ...prev, [event.target.name]: event.target.value }));
   };
 
-//   useEffect(() => {
-//     socket.on("connect", () => {
-//         console.log(`Connected with socket ID: ${socket.id}`);
-//     });
-
-//     socket.emit("send_message", { message: "Hello from client" });
-
-//     return () => {
-//         socket.disconnect();
-//     };
-// }, []);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     
@@ -78,7 +66,7 @@ function Select() {
         ...formData,
         email: sessionStorage.getItem("email"),
         token: sessionStorage.getItem("token"),
-        username: sessionStorage.getItem("username")
+        username: sessionStorage.getItem("username"), 
       };
 
       // Emit a message to the server when submitting
