@@ -182,7 +182,6 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
         channel.ack(chosenUser);
         channel.ack(secondUser);
 
-        console.log("Returnnnnnnn");
 
         return userList;
 
@@ -270,14 +269,14 @@ async function removeUserFromPriorityQueue(topic, difficultyLevel, email, token,
 
       if (message) {
         let user = JSON.parse(message.content.toString());
-        console.log(`useremail: ${user.email}     email: ${email}`);
+        // console.log(`useremail: ${user.email}     email: ${email}`);
 
         if (user.email === email) {
-          console.log("Correct user found. Removing from queue.");
+          // console.log("Correct user found. Removing from queue.");
           channel.ack(message);  // Acknowledge (remove) the message from the queue
           found = true;
         } else {
-          console.log("Incorrect user. Requeuing the message.");
+          // console.log("Incorrect user. Requeuing the message.");
           channel.nack(message, false, true);  // Requeue the message to keep it in the queue
         }
 
