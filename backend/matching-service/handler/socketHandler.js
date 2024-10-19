@@ -4,7 +4,8 @@ const {
   checkMatchingSameQueue,
   checkMatchingAnyQueue,
   clearQueue,
-  removeUserFromQueue
+  removeUserFromQueue,
+  removeUserFromPriorityQueue
 } = require('../controller/queueController');
 const { createMatch } = require("../controller/matchController");
 
@@ -79,6 +80,8 @@ const handleSocketIO = (io) => {
 
       // Remove user from RabbitMQ queue (assuming you have the logic for this)
       await removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny);
+      await removeUserFromPriorityQueue(topic, difficultyLevel, email, token, username, isAny);
+      
 
     })
 
