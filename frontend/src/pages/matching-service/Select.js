@@ -21,7 +21,7 @@ function Select() {
     difficultyLevel: '',
     email: '',
     token: '',
-    isAny: false,
+    isAny: false
   });
 
   const difficultyLevelOptions = [

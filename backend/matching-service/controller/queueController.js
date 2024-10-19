@@ -10,7 +10,16 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
-  const message = {"topic": topic, "difficultyLevel": difficultyLevel, "email": email, "token": token, "username": username, "isAny": isAny };
+
+  console.log("q key, isAny", queueKey, isAny);
+  const message = {
+    "email": email,
+    "token": token,
+    "username": username,
+    "topic": topic,
+    "difficultyLevel": difficultyLevel,
+    "isAny": isAny
+  };
 
   try {
     
