@@ -257,7 +257,6 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token, usernam
 
 async function removeUserFromPriorityQueue(topic, difficultyLevel, email, token, username, isAny) {
   const queueKey = topic + " priority";
-  console.log("SDSDSDSDSD");
 
   try {
     const { conn, channel } = await connectToRabbitMQ();
