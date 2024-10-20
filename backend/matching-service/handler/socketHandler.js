@@ -36,18 +36,17 @@ const handleSocketIO = (io) => {
           // Notify both users about the match
           io.to(socketMap[firstUser.email]).emit("match_found", { matchedData: secondUser });
           io.to(socketMap[secondUser.email]).emit("match_found", { matchedData: firstUser });
-          console.log("A match is found");
+          console.log(`A match is found: --> User1: ${firstUser.email}  --> User2: ${secondUser.email}`);
 
+          const { status, msg, error } = createMatch(firstUser, secondUser);
+          if (status == 200 && msg) {
+            console.log(msg);
+          } else if (status == 500 && error) {
+            console.error(error);
+          }
 
-        const { status, msg, error } = createMatch(firstUser, secondUser);
-        if (status == 200 && msg) {
-          console.log(msg);
-        } else if (status == 500 && error) {
-          console.error(error);
         }
 
-        }
-      
       } else {
         const mixUserList = await checkMatchingAnyQueue(topic, difficultyLevel, email, token, username, isAny);
 
@@ -57,8 +56,8 @@ const handleSocketIO = (io) => {
           // Notify both users about the match
           io.to(socketMap[firstMixUser.email]).emit("match_found", { matchedData: secondMixUser });
           io.to(socketMap[secondMixUser.email]).emit("match_found", { matchedData: firstMixUser });
-          console.log("A match is found");
-
+          console.log(`A match is found: --> User1: ${firstMixUser.email}  --> User2: ${secondMixUser.email}`);
+          
           const { status, msg, error } = createMatch(firstMixUser, secondMixUser);
           if (status == 200 && msg) {
             console.log(msg);
@@ -67,13 +66,12 @@ const handleSocketIO = (io) => {
           }
         }
 
-
       }
     });
 
     // Listen for cancel_matching event from client
     socket.on("cancel_matching", async (data) => {
-      console.log(`Cancelling matching for user:`, data);
+      console.log(`Cancelling matching for user:`, data.email);
       const { topic, difficultyLevel, email, token, username, isAny } = data;
 
       // Store the socket ID for the user
@@ -82,7 +80,6 @@ const handleSocketIO = (io) => {
       // Remove user from RabbitMQ queue (assuming you have the logic for this)
       await removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny);
       await removeUserFromPriorityQueue(topic, difficultyLevel, email, token, username, isAny);
-      
 
     })
 
