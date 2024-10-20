@@ -164,12 +164,10 @@ const getRandomQuestionsByCategory = async (req, res) => {
       questionArray.push({ id: doc.id, ...doc.data() });
     });
 
-    console.log("question", questionArray);
-    
     const randomGen = Math.floor(Math.random() * questionArray.length);
 
     const randomQuestion = questionArray[randomGen];
-    res.status(200).json(randomQuestion);
+    res.status(200).send(randomQuestion);
   } catch (error) {
     console.error("Error fetching data from Firebase:", error);
     res.status(500).send({ error: error.message });
@@ -190,15 +188,12 @@ const getRandomQuestionsByCategoryAndComplexity = async (req, res) => {
   try {
     const category = req.params.category;
     const complexity = req.params.complexity;
-    console.log("category and complexity", category);
-    console.log("category and complexity", complexity);
+
     const questions = await questionCollection.where("category", "==", category).where("complexity", "==", complexity).get();
 
     if (questions.empty) {
       res.status(400).send("No questions found.");
     }
-
-    console.log("questions", questions);
 
     const questionArray = [];
 
@@ -210,7 +205,7 @@ const getRandomQuestionsByCategoryAndComplexity = async (req, res) => {
 
     const randomQuestion = questionArray[randomGen];
 
-    res.status(200).json(randomQuestion);
+    res.status(200).send(randomQuestion);
   } catch (error) {
     console.error("Error fetching data from Firebase:", error);
     res.status(500).send({ error: error.message });
