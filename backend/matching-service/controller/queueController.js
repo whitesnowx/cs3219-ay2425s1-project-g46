@@ -10,8 +10,6 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 
   }
 
-
-  console.log("q key, isAny", queueKey, isAny);
   const message = {
     "email": email,
     "token": token,
@@ -22,7 +20,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
   };
 
   try {
-    
+
     const queuePriorityKey = topic + " priority";
     const { conn, channel } = await connectToRabbitMQ();
     const res = await channel.assertQueue(queueKey);
@@ -34,7 +32,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
     });
     console.log(`Message sent to queue ${queueKey}`);
 
-    
+
     await channel.sendToQueue(queuePriorityKey, Buffer.from(JSON.stringify(message)), {
       expiration: `10000` // Timer for TTL
     });
@@ -53,7 +51,7 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
 async function checkMatchingSameQueue(topic, difficultyLevel, email, token, username, isAny) {
 
   let queueKey = topic + " " + difficultyLevel;
-  
+
   if (isAny) {
     queueKey = topic + " " + "any";
 
@@ -62,7 +60,7 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
   try {
     const { conn, channel } = await connectToRabbitMQ();
     const res = await channel.assertQueue(queueKey);
-    
+
     const queueAnyKey = `${topic} any`;
     const queueAnyStatus = await channel.checkQueue(queueAnyKey);
 
@@ -82,12 +80,12 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
         console.log("Now checking on the 'any' queue");
         const queueAnyStatus = await channel.checkQueue(queueAnyKey);
         if (queueAnyStatus.messageCount > 0) {
-          secondUser = await channel.get(queueAnyKey, {noAck: false});
+          secondUser = await channel.get(queueAnyKey, { noAck: false });
           if (!secondUser) {
             console.error("Failed to retrieve the second user from 'any' queue.")
             channel.nack(firstUser, false, true); //Requeue the first user
             return;
-          } 
+          }
         }
 
       }
@@ -121,7 +119,7 @@ async function checkMatchingSameQueue(topic, difficultyLevel, email, token, user
 
 async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny) {
   try {
-    
+
     const queuePriorityKey = topic + " priority";
     while (true) {
       const { conn, channel } = await connectToRabbitMQ();
@@ -134,26 +132,26 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
           console.error("Failed to retrieve the first user.");
           return;
         }
-        
+
         const userInPriorityQueueData = JSON.parse(userInPriorityQueue.content.toString());
 
-        console.log(`Current email: ${email}   PriorityQueueUser: ${userInPriorityQueueData.email}`);
-        if (userInPriorityQueueData.email ===  email ) {          
+        // console.log(`Current email: ${email}   PriorityQueueUser: ${userInPriorityQueueData.email}`);
+        if (userInPriorityQueueData.email === email) {
           channel.nack(userInPriorityQueue, false, true);
           return null;
         }
 
         channel.ack(userInPriorityQueue);
-        
+
         let queueKey = "";
         if (userInPriorityQueueData.isAny) {
           queueKey = `${userInPriorityQueueData.topic} any`;
         } else {
           queueKey = `${userInPriorityQueueData.topic} ${userInPriorityQueueData.difficultyLevel}`;
         }
-        
 
-        
+
+
         const chosenUser = await channel.get(queueKey, { noAck: false });
         if (!chosenUser || !chosenUser.content) {
           continue;
@@ -162,13 +160,13 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
           continue;
         }
 
-        console.log("Found the user");
+        // console.log("Found the user");
 
         await channel.assertQueue(topic + " any");
         const secondUser = await channel.get((topic + " any"), { noAck: false });
         if (!secondUser || !secondUser.content) {
           console.error("Failed to retrieve the second user.");
-          channel.nack(chosenUser, false, true); 
+          channel.nack(chosenUser, false, true);
           return;
         }
 
@@ -181,7 +179,6 @@ async function checkMatchingAnyQueue(topic, difficultyLevel, email, token, isAny
 
         channel.ack(chosenUser);
         channel.ack(secondUser);
-
 
         return userList;
 
@@ -249,7 +246,7 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token, usernam
       return userData;
     }
   } catch (error) {
-    console.error(`Failed to remove user from queue $(queueKey):`, error)
+    console.error(`Failed to remove user from queue ${queueKey}:`, error)
   }
 }
 
@@ -262,7 +259,7 @@ async function removeUserFromPriorityQueue(topic, difficultyLevel, email, token,
     const res = await channel.assertQueue(queueKey);
 
     let found = false;
-    
+
     // Loop through the queue messages
     while (!found) {
       const message = await channel.get(queueKey, { noAck: false });
@@ -289,7 +286,7 @@ async function removeUserFromPriorityQueue(topic, difficultyLevel, email, token,
     // Close the channel and connection after processing
     await channel.close();
     await conn.close();
-    
+
   } catch (error) {
     console.error(`Failed to remove user from queue ${queueKey}:`, error);
   }

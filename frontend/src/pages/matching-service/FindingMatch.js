@@ -7,12 +7,12 @@ import NavBar from "../../components/NavBar";
 function FindingMatch() {
 
 
-    const [displayedText, setDisplayedText] = useState("");
+    const [displayedText, setDisplayedText] = useState("Matching in progress...");
     const [timeLeft, setTimeLeft] = useState(10); // Set timer to 10 seconds
     const [matchStatus, setMatchStatus] = useState(""); // To track if match is found or not
-    const [animationKey, setAnimationKey] = useState(0); // Key to reset the animation effect
-    let typingInterval;
-    const fullText = "  Matching in progress.... ";
+    // const [animationKey, setAnimationKey] = useState(0); // Key to reset the animation effect
+    // let typingInterval;
+    // const fullText = "  Matching in progress.... ";
     const navigate = useNavigate();
     const location = useLocation(); // Use useLocation to retrieve state
     const { topic, difficultyLevel, email, token, username } = location.state || {}; // Destructure updatedFormData from state
@@ -31,6 +31,16 @@ function FindingMatch() {
             event.stopImmediatePropagation();
             event.preventDefault();
         }
+    }
+
+    // check for refresh, allow user to stay on page regardless if refresh is cancelled or confirmed
+    window.onbeforeunload = (event) => {
+      socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
+    }
+
+    // if refresh and the page reloads, send user back to queue
+    window.onload = (event) => {
+      socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
     }
 
     // detect changes for isAnyDifficulty (used for cancelling queue)
@@ -62,34 +72,34 @@ function FindingMatch() {
     }, [matchStatus]); // Restart the timer whenever matchStatus or animationKey changes
 
     
-    // Loading animation 
-    useEffect(() => {
-        let currentIndex = 0;
-        clearInterval(typingInterval); // Clear previous intervals
+    // // Loading animation 
+    // useEffect(() => {
+    //     let currentIndex = 0;
+    //     clearInterval(typingInterval); // Clear previous intervals
 
-        const startTyping = () => {
-            setDisplayedText(""); // Clear the text
-            typingInterval = setInterval(() => {
-                setDisplayedText((prev) => prev + fullText[currentIndex]);
-                currentIndex++;
+    //     const startTyping = () => {
+    //         setDisplayedText(""); // Clear the text
+    //         typingInterval = setInterval(() => {
+    //             setDisplayedText((prev) => prev + fullText[currentIndex]);
+    //             currentIndex++;
 
-                // Stop typing when the text is fully typed
-                if (currentIndex >= fullText.length - 1) {
-                    clearInterval(typingInterval); // Stop the interval after the text is fully typed
-                    setTimeout(() => {
-                        currentIndex = 0; // Reset the index for the next cycle
-                        setDisplayedText(""); // Clear the text for the next cycle
-                        startTyping(); // Restart typing after clearing
-                    }, 1000); // Wait for 1 second before restarting
-                }
-            }, 100); // Typing speed (100ms delay between each character)
-        };
+    //             // Stop typing when the text is fully typed
+    //             if (currentIndex >= fullText.length - 1) {
+    //                 clearInterval(typingInterval); // Stop the interval after the text is fully typed
+    //                 setTimeout(() => {
+    //                     currentIndex = 0; // Reset the index for the next cycle
+    //                     setDisplayedText(""); // Clear the text for the next cycle
+    //                     startTyping(); // Restart typing after clearing
+    //                 }, 1000); // Wait for 1 second before restarting
+    //             }
+    //         }, 100); // Typing speed (100ms delay between each character)
+    //     };
 
-        startTyping();
+    //     startTyping();
 
-        // Cleanup interval on unmount to avoid memory leaks
-        return () => clearInterval(typingInterval);
-    }, [animationKey]); // Restart the animation whenever the animationKey changes
+    //     // Cleanup interval on unmount to avoid memory leaks
+    //     return () => clearInterval(typingInterval);
+    // }, [animationKey]); // Restart the animation whenever the animationKey changes
     
 
     // Listen for the "match_found" event from the server
@@ -108,9 +118,10 @@ function FindingMatch() {
     
     // Function to reset the matching process (reset timer and animation)
     const handleRetry = () => {
+      setDisplayedText("Matching in progress...");
         setMatchStatus(""); // Reset match status
         setTimeLeft(10); // Reset timer to 10 seconds
-        setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
+        // setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
         console.log("Retrying match...");
 
         setIsAnyDifficulty(false);
@@ -119,9 +130,10 @@ function FindingMatch() {
 
     // Function to reset the matching process with any difficulty levels (reset timer and animation)
     const handleRetryWithAnyDifficultyLevel = () => {
+        setDisplayedText("Matching in progress...");
         setMatchStatus(""); // Reset match status
         setTimeLeft(10); // Reset timer to 10 seconds
-        setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
+        // setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
         console.log("Retrying match with any difficulty...");
 
         setIsAnyDifficulty(true);
