@@ -1,5 +1,5 @@
 // Author(s): Xiu Jia
-const QuestionPanel = ({questionData}) => {
+const QuestionPanel = ({ questionData }) => {
 
   return (
     <div id="questionContainer" className="container">

@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const http = require("http");
 const { Server } = require("socket.io");
-const port = process.env.PORT; //5003
+const port = process.env.PORT; // 5003
 const socketPort = process.env.SOCKET_PORT; // 8000
 
 // Import the socket handler
