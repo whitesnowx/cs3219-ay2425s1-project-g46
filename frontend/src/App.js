@@ -11,7 +11,7 @@ import Signup from "./pages/user-service/Signup";
 import Login from "./pages/user-service/Login";
 import UserRestrictedRoute from "./pages/user-service/utils/UserRestrictedRoute";
 import UserProtectedRoute from "./pages/user-service/utils/UserProtectedRoute";
-import TempMatchPage from "./pages/collaboration-service/TempMatchPage";
+import TempMatchPage from "./pages/matching-service/TempMatchPage";
 
 /**
  * 
