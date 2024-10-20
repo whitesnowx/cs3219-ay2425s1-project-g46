@@ -1,25 +1,19 @@
-// Author(s): Andrew
+// Author(s): Xue Ling, Xiu Jia
 require("dotenv").config();
 
-const express = require("express");
-const cors = require("cors");
 const http = require("http");
 const { Server } = require("socket.io");
-const app = express();
 const port = process.env.PORT; //5003
+const socketPort = process.env.SOCKET_PORT; // 8000
 
 // Import the socket handler
 const { handleSocketIO } = require("./handler/socketHandler.js");
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
 // Create an HTTP server that works with both Express and Socket.IO
-const server = http.createServer(app);
+const server = http.createServer();
 
 // Initialize the Socket.IO server
-const io = new Server(server, {
+const io = new Server(socketPort, {
   cors: {
     origin: "*", // Allow all origins, adjust as needed
     methods: ["GET", "POST"],
