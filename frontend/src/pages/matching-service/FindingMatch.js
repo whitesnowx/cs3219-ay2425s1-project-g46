@@ -38,6 +38,11 @@ function FindingMatch() {
       socket.emit("cancel_matching", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
     }
 
+    // if refresh and the page reloads, send user back to queue
+    window.onload = (event) => {
+      socket.emit("join_matching_queue", { topic, difficultyLevel, email, token, username, isAny: isAnyDifficulty });
+    }
+
     // detect changes for isAnyDifficulty (used for cancelling queue)
     useEffect(() => {
         setIsAnyDifficulty((prevState) => !prevState);
