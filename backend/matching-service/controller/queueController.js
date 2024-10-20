@@ -28,13 +28,13 @@ async function addUserToQueue(topic, difficultyLevel, email, token, username, is
     await channel.assertQueue(`${topic} any`); // Ensure that there is alawys "any" queue
 
     await channel.sendToQueue(queueKey, Buffer.from(JSON.stringify(message)), {
-      expiration: `10000` // Timer for TTL
+      expiration: `60000` // Timer for TTL
     });
     console.log(`Message sent to queue ${queueKey}`);
 
 
     await channel.sendToQueue(queuePriorityKey, Buffer.from(JSON.stringify(message)), {
-      expiration: `10000` // Timer for TTL
+      expiration: `60000` // Timer for TTL
     });
     console.log(`Message sent to queue ${queuePriorityKey}`);
 
