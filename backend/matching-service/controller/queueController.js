@@ -225,7 +225,7 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token, usernam
     const { conn, channel } = await connectToRabbitMQ();
     const res = await channel.assertQueue(queueKey);
 
-    const queueStatus = await channel.checkQueue(queueKey);
+    let queueStatus = await channel.checkQueue(queueKey);
     // there should be only 1 person in queue
     // if > 2 people in queue, will be instantly matched
     if (queueStatus.messageCount < 2) {
@@ -237,6 +237,8 @@ async function removeUserFromQueue(topic, difficultyLevel, email, token, usernam
 
       const userData = JSON.parse(user.content.toString());
       channel.ack(user);
+      queueStatus = await channel.checkQueue(queueKey);
+      console.log(`${queueKey} current has ${queueStatus.messageCount} users`);
 
       // Close the channel and connection after processing
       await channel.close();
