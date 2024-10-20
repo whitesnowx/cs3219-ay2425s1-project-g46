@@ -73,7 +73,7 @@ const handleSocketIO = (io) => {
 
     // Listen for cancel_matching event from client
     socket.on("cancel_matching", async (data) => {
-      console.log(`Cancelling matching for user:`, data);
+      console.log(`Cancelling matching for user:`, data.email);
       const { topic, difficultyLevel, email, token, username, isAny } = data;
 
       // Store the socket ID for the user
