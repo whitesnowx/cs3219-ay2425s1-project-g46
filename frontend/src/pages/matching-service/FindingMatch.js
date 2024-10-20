@@ -7,7 +7,7 @@ import NavBar from "../../components/NavBar";
 function FindingMatch() {
 
   const [displayedText, setDisplayedText] = useState("Matching in progress...");
-  const [timeLeft, setTimeLeft] = useState(10); // Set timer to 10 seconds
+  const [timeLeft, setTimeLeft] = useState(60); // Set timer to 10 seconds
   const [matchStatus, setMatchStatus] = useState(""); // To track if match is found or not
   // const [animationKey, setAnimationKey] = useState(0); // Key to reset the animation effect
   // let typingInterval;
@@ -116,7 +116,7 @@ function FindingMatch() {
   const handleRetry = () => {
     setDisplayedText("Matching in progress...");
     setMatchStatus(""); // Reset match status
-    setTimeLeft(10); // Reset timer to 10 seconds
+    setTimeLeft(60); // Reset timer to 10 seconds
     // setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
     console.log("Retrying match...");
 
@@ -128,7 +128,7 @@ function FindingMatch() {
   const handleRetryWithAnyDifficultyLevel = () => {
     setDisplayedText("Matching in progress...");
     setMatchStatus(""); // Reset match status
-    setTimeLeft(10); // Reset timer to 10 seconds
+    setTimeLeft(60); // Reset timer to 10 seconds
     // setAnimationKey(prevKey => prevKey + 1); // Change animation key to restart the animation
     console.log("Retrying match with any difficulty...");
 
