@@ -5,11 +5,13 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Test from "./pages/Test";
 import Question from "./pages/question-service/Question";
 import QuestionPage from "./pages/question-service/QuestionPage";
-import Collab from "./pages/collaboration-service/Collab"
+import CollaborationPage from "./pages/collaboration-service/CollaborationPage"
 import PageNotFound from "./components/PageNotFound";
 import Signup from "./pages/user-service/Signup";
 import Login from "./pages/user-service/Login";
 import UserRestrictedRoute from "./pages/user-service/utils/UserRestrictedRoute";
+import UserProtectedRoute from "./pages/user-service/utils/UserProtectedRoute";
+import TempMatchPage from "./pages/collaboration-service/TempMatchPage";
 
 /**
  * 
@@ -22,13 +24,17 @@ function App() {
       <Routes>
         <Route path="/" element={<Question />} />
         <Route path="/Test" element={<Test />} />
-        <Route path="/collab" element={<Collab />} />
         <Route path="/question/:questionId" element={<QuestionPage />} />
 
         {/* logged-in users cannot access routes included in 'UserRestrictedRoute' */}
         <Route element={<UserRestrictedRoute />}>
           <Route path="/user/signup" element={<Signup />}></Route>
           <Route path="/user/login" element={<Login />}></Route>
+        </Route>
+
+        <Route element={<UserProtectedRoute />}>
+          <Route path="/collaboration" element={<CollaborationPage />} />
+          <Route path="/tempMatch" element={<TempMatchPage />} />
         </Route>
 
         {/* Error page */}
