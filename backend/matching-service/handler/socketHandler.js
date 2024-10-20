@@ -39,15 +39,15 @@ const handleSocketIO = (io) => {
           console.log("A match is found");
 
 
-        const { status, msg, error } = createMatch(firstUser, secondUser);
-        if (status == 200 && msg) {
-          console.log(msg);
-        } else if (status == 500 && error) {
-          console.error(error);
-        }
+          const { status, msg, error } = createMatch(firstUser, secondUser);
+          if (status == 200 && msg) {
+            console.log(msg);
+          } else if (status == 500 && error) {
+            console.error(error);
+          }
 
         }
-      
+
       } else {
         const mixUserList = await checkMatchingAnyQueue(topic, difficultyLevel, email, token, username, isAny);
 
@@ -82,7 +82,7 @@ const handleSocketIO = (io) => {
       // Remove user from RabbitMQ queue (assuming you have the logic for this)
       await removeUserFromQueue(topic, difficultyLevel, email, token, username, isAny);
       await removeUserFromPriorityQueue(topic, difficultyLevel, email, token, username, isAny);
-      
+
 
     })
 
