@@ -30,6 +30,10 @@ const handleSocketIO = (io) => {
       socket.to(roomId).emit("receiveContent", { content });
     });
 
+    socket.on("sendCode", ({ roomId, code }) => {
+      socket.to(roomId).emit("receiveCode", { code });
+    });
+
     // Handle disconnection
     socket.on("disconnect", () => {
       console.log(`User with socket ID ${socket.id} disconnected`);
