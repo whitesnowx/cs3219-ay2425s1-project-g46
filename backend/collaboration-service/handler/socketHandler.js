@@ -34,6 +34,10 @@ const handleSocketIO = (io) => {
       socket.to(roomId).emit("receiveCode", { code });
     });
 
+    socket.on("languageChange", ({ roomId, language }) => {
+      socket.to(roomId).emit("languageChange", { language });
+    });
+
     // Handle disconnection
     socket.on("disconnect", () => {
       console.log(`User with socket ID ${socket.id} disconnected`);

@@ -24,23 +24,21 @@ const CollaborationPage = () => {
       <div className="tabs">
         <button
           onClick={() => handleTabChange("code")}
-          className={activeTab == "code" ? "active" : ""}
         >
           Code
         </button>
         <button
           onClick={() => handleTabChange("content")}
-          className={activeTab == "content" ? "active" : ""}
         >
           Text
         </button>
       </div>
       <div className="tab-content">
         {/* Render both components with inline styles for visibility control */}
-        <div style={{ display: activeTab == "code" ? "block" : "none" }}>
+        <div style={{ display: activeTab === "code" ? "block" : "none" }}>
           <CodeEditor roomId={roomId} />
         </div>
-        <div style={{ display: activeTab == "content" ? "block" : "none" }}>
+        <div style={{ display: activeTab === "content" ? "block" : "none" }}>
           <ContentEditor roomId={roomId} />
         </div>
       </div>
