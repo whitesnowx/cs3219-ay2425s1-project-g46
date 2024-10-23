@@ -1,9 +1,9 @@
-// Author(s): Xue Ling, Xiu Jia
+// Author(s): Andrew
 require("dotenv").config();
 
 const http = require("http");
 const { Server } = require("socket.io");
-const port = process.env.PORT || 5003;
+const port = process.env.PORT || 5002;
 
 // Import the socket handler
 const { handleSocketIO } = require("./handler/socketHandler.js");

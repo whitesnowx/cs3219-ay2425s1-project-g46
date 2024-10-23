@@ -6,12 +6,12 @@ const url_question_service = process.env.URL_QUESTION_SERVICE;
 const getRandomQuestion = async (category, complexity = "") => {
   const qnURL = `${url_question_service}/random/${category}/${complexity}`
 
-  console.log("qnURL", qnURL);
+  // console.log("qnURL", qnURL);
   const response = await fetch(qnURL).then((response) => {
     return response.json();
   });
 
-  console.log("response", response);
+  // console.log("response", response);
   return response;
 };
 

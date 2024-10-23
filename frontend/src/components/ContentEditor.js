@@ -1,27 +1,28 @@
 // Author(s): Xiu Jia
 import "./styles/ContentEditor.css";
 import { useEffect } from "react";
-import socket from "../pages/collaboration-service/utils/socket";
-import usePersistState from "../hook/usePersistState";
+import { collaborationSocket } from "../config/socket";
+import useSessionStorage from "../hook/useSessionStorage";
 
-const ContentEditor = ({ roomId }) => {
-  const [content, setContent] = usePersistState([], "content");
+const ContentEditor = ({ id }) => {
+  const [content, setContent] = useSessionStorage("", "content");
 
   useEffect(() => {
-    console.log(roomId);
-    socket.on("receiveContent", ({ content }) => {
+    console.log(id);
+    collaborationSocket.on("receiveContent", ({ content }) => {
       setContent(content);
+      console.log("content received: ", content);
     })
 
     return () => {
-      socket.off("receiveContent");
+      collaborationSocket.off("receiveContent");
     };
   }, [content]);
 
   const updateContent = (e) => {
     const content = e.target.value;
     setContent(content);
-    socket.emit("sendContent", { roomId, content });
+    collaborationSocket.emit("sendContent", { id: id, content });
   };
 
   return (
