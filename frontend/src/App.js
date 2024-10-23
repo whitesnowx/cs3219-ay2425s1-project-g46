@@ -15,7 +15,6 @@ import FindingMatch from "./pages/matching-service/FindingMatch";
 import MatchFound from "./pages/matching-service/MatchFound";
 import LoggedInRoute from "./pages/user-service/utils/LoggedInRoute";
 import LoggedOutRoute from "./pages/user-service/utils/LoggedOutRoute";
-import TempMatchPage from "./pages/matching-service/TempMatchPage";
 
 /**
  * 
@@ -41,7 +40,6 @@ function App() {
           <Route path="/matching/matchFound" element={<MatchFound />} />
           
           <Route path="/collaboration" element={<CollaborationPage />} />
-          <Route path="/tempMatch" element={<TempMatchPage />} />
         </Route>
 
         {/* logged-in users cannot access routes included in 'LoggedOutRoute' */}
