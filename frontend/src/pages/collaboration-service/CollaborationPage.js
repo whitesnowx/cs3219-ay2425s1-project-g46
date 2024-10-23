@@ -6,14 +6,14 @@ import QuestionPanel from "../../components/QuestionPanel"
 const CollaborationPage = () => {
   const location = useLocation();
   const data = location.state.data;
-  const { roomId, questionData } = data;
+  const { id, questionData } = data;
 
   return (
     <div>
       <NavBar />
       <QuestionPanel questionData={questionData} />
       <form>
-        <ContentEditor roomId={roomId} />
+        <ContentEditor id={id} />
       </form>
     </div>
   )
