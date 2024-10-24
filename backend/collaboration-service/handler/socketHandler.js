@@ -1,6 +1,6 @@
 // Author(s): Xue Ling, Xiu Jia
 const { getRandomQuestion, getComplexity } = require("../service/questionService");
-const db = require("../db/firebase");
+const db = require("../config/firebase");
 
 let socketMap = {};
 let intervalMap = {};
