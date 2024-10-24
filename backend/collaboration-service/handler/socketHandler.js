@@ -5,9 +5,9 @@ const db = require("../config/firebase");
 let socketMap = {};
 let intervalMap = {};
 
-// let latestContent = ""; // current
-// let haveNewData = false;
-let latestContent = {}; 
+let latestContentText = {}; 
+let latestContentCode = {}; 
+let latestLanguage = {}
 let haveNewData = {};
 
 
@@ -42,12 +42,16 @@ const handleSocketIO = (io) => {
       // a timer to backup the current collab data
       const interval = setInterval(async () => {
         const currentTime = new Date().toISOString();
-        const currentContent = latestContent[id];
+        const currentContentText = latestContentText[id];
+        const currentContentCode = latestContentCode[id];
+        const currentLanguage = latestLanguage[id] || null;
         const periodicData = {
           user1,
           user2,
           questionData,
-          currentContent,
+          currentLanguage,
+          currentContentText,
+          currentContentCode,
           timestamp: currentTime
         };
 
@@ -81,16 +85,20 @@ const handleSocketIO = (io) => {
     
     socket.on("sendContent", ({ id, content }) => {
       haveNewData[id] = true;
-      latestContent[id] = content;
+      latestContentText[id] = content;
 
       socket.to(id).emit("receiveContent", { content: content });
     });
 
     socket.on("sendCode", ({ id, code }) => {
-      socket.to(id).emit("receiveCode", { code });
+      haveNewData[id] = true;
+      latestContentCode[id] = code;
+      socket.to(id).emit("receiveCode", { code: code });
     });
 
     socket.on("languageChange", ({ id, language }) => {
+      haveNewData[id] = true;
+      latestLanguage[id] = language;
       socket.to(id).emit("languageChange", { language });
     });
 
