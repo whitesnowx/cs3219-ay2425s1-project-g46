@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { useState } from "react";
 import ContentEditor from "../../components/ContentEditor";
 import CodeEditor from "../../components/CodeEditor";
+import "./styles/CollaborationPage.css";
 
 import NavBar from "../../components/NavBar";
 import QuestionPanel from "../../components/QuestionPanel";
@@ -20,19 +21,11 @@ const CollaborationPage = () => {
     <div>
       <NavBar />
       <QuestionPanel questionData={questionData} />
-      <div className="tabs">
-        <button
-          onClick={() => handleTabChange("code")}
-        >
-          Code
-        </button>
-        <button
-          onClick={() => handleTabChange("content")}
-        >
-          Text
-        </button>
+      <div id="tabs">
+        <button onClick={() => handleTabChange("code")} autoFocus>Code</button>
+        <button onClick={() => handleTabChange("content")}>Text</button>
       </div>
-      <div className="tab-content">
+      <div id="tab-content">
         {/* Render both components with inline styles for visibility control */}
         <div style={{ display: activeTab === "code" ? "block" : "none" }}>
           <CodeEditor id={id} />

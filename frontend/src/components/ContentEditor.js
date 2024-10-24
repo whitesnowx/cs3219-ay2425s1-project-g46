@@ -12,7 +12,7 @@ const ContentEditor = ({ id }) => {
     collaborationSocket.on("receiveContent", ({ content }) => {
       setContent(content);
       console.log("content received: ", content);
-    })
+    });
 
     return () => {
       collaborationSocket.off("receiveContent");
@@ -36,7 +36,7 @@ const ContentEditor = ({ id }) => {
         autoFocus
       ></textarea>
     </div>
-  )
-}
+  );
+};
 
 export default ContentEditor;

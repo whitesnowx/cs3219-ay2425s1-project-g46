@@ -1,4 +1,4 @@
-/* ContentEditor.css */
+/* CodeEditor.css */
 #editor-container {
   background: #767676;
   border: 2px solid var(--sds-color-border-default-default);
@@ -11,7 +11,7 @@
   margin-top: 10px;
   margin-bottom: 10px;
   font-size: 16px;
-  border-radius: 5px;
+
   background-color: #f8f9fa;
   color: #343a40;
 }

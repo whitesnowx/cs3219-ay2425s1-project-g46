@@ -6,7 +6,6 @@ import Editor from "@monaco-editor/react";
 import supportedLanguages from "../data/supportedLanguages.json";
 import useSessionStorage from "../hook/useSessionStorage";
 
-
 const CodeEditor = ({ id }) => {
   const [code, setCode] = useSessionStorage("", "code");
   const editorRef = useRef(null);
