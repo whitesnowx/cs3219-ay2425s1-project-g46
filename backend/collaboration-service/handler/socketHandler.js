@@ -5,13 +5,19 @@ const db = require("../db/firebase");
 let socketMap = {};
 let intervalMap = {};
 
+let latestContent = ""; // current
+let haveNewData = false;
+
 const handleSocketIO = (io) => {
   io.on("connection", (socket) => {
     console.log(`A user connected with socket ID: ${socket.id}`);
 
+    
+
     socket.on("createSocketRoom", async ({ data, id, currentUser }) => {
       // Store the socket id for the user
       socketMap[currentUser] = socket.id;
+      
 
       const { user1, user2 } = data;
 
@@ -37,15 +43,36 @@ const handleSocketIO = (io) => {
           user1,
           user2,
           questionData,
+          latestContent,
           timestamp: currentTime
         };
 
+        // try {
+        //   await db.collection("collabs").add({
+        //     roomId: id,
+        //     data: periodicData
+        //   });
+        //   console.log(`Data sent to Firebase at ${currentTime}`);
+        // } catch (error) {
+        //   console.error("Fail to save to database: ", error);
+        // }
         try {
-          await db.collection("collabs").add({
-            roomId: id,
-            data: periodicData
-          });
-          console.log(`Data sent to Firebase at ${currentTime}`);
+          const collabRef = db.collection("collabs").doc(id); 
+          const doc = await collabRef.get();
+
+          if (doc.exists) {
+            await collabRef.update(periodicData);
+            console.log(`Collab Data updated to Firebase at ${currentTime}`);
+          } else {
+            if (haveNewData) {
+              await collabRef.set({
+                roomId: id,
+                ...periodicData
+              });
+              haveNewData = false;
+              console.log(`New Collab page recorded to Firebase at ${currentTime}`);
+            }
+          }
         } catch (error) {
           console.error("Fail to save to database: ", error);
         }
@@ -55,6 +82,9 @@ const handleSocketIO = (io) => {
     });
     
     socket.on("sendContent", ({ id, content }) => {
+      haveNewData = true;
+      latestContent = content;
+
       socket.to(id).emit("receiveContent", { content: content });
     });
 
