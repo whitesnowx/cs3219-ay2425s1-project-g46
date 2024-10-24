@@ -41,6 +41,14 @@ function NavBar() {
               <a href="/user/login">Login</a>
             </li>
           }
+          {/* history page button if logged in*/}
+          {isLoggedIn ?
+            <li>
+            <a href="/history">Collabs</a>
+          </li>
+            :
+            null
+          }
         </ul>
       </div>
     </nav>

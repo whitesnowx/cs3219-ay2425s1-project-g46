@@ -1,4 +1,3 @@
-// Author(s): Calista, Xiu Jia, Xue Ling
 const express = require("express");
 const router = express.Router();
 
