@@ -1,4 +1,4 @@
-// Author(s): Xue Ling, Xiu Jia
+// Author(s): Xue Ling, Xiu Jia, Calista
 const { getRandomQuestion, getComplexity } = require("../service/questionService");
 const db = require("../config/firebase");
 
@@ -10,12 +10,10 @@ let latestContentCode = {};
 let latestLanguage = {}
 let haveNewData = {};
 
-
 const handleSocketIO = (io) => {
   io.on("connection", (socket) => {
     console.log(`A user connected with socket ID: ${socket.id}`);
 
-    
 
     socket.on("createSocketRoom", async ({ data, id, currentUser }) => {
       // Store the socket id for the user
