@@ -33,6 +33,14 @@ const handleSocketIO = (io) => {
       socket.to(id).emit("receiveContent", { content: content });
     });
 
+    socket.on("sendCode", ({ id, code }) => {
+      socket.to(id).emit("receiveCode", { code });
+    });
+
+    socket.on("languageChange", ({ id, language }) => {
+      socket.to(id).emit("languageChange", { language });
+    });
+
     // Handle disconnection
     socket.on("disconnect", () => {
       console.log(`User with socket ID ${socket.id} disconnected`);
