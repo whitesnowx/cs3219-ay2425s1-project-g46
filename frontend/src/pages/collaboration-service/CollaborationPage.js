@@ -9,7 +9,7 @@ import QuestionPanel from "../../components/QuestionPanel";
 const CollaborationPage = () => {
   const location = useLocation();
   const data = location.state.data;
-  const { roomId, questionData } = data;
+  const { id, questionData } = data;
   const [activeTab, setActiveTab] = useState("code", "");
 
   const handleTabChange = (tab) => {
@@ -20,7 +20,6 @@ const CollaborationPage = () => {
     <div>
       <NavBar />
       <QuestionPanel questionData={questionData} />
-
       <div className="tabs">
         <button
           onClick={() => handleTabChange("code")}
@@ -36,10 +35,10 @@ const CollaborationPage = () => {
       <div className="tab-content">
         {/* Render both components with inline styles for visibility control */}
         <div style={{ display: activeTab === "code" ? "block" : "none" }}>
-          <CodeEditor roomId={roomId} />
+          <CodeEditor id={id} />
         </div>
         <div style={{ display: activeTab === "content" ? "block" : "none" }}>
-          <ContentEditor roomId={roomId} />
+          <ContentEditor id={id} />
         </div>
       </div>
     </div>

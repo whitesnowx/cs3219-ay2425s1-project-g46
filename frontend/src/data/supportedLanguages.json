@@ -38,5 +38,9 @@
     {
         "value": "typescript",
         "label": "TypeScript"
+    },
+    {
+        "value": "sql",
+        "label": "SQL"
     }
 ]

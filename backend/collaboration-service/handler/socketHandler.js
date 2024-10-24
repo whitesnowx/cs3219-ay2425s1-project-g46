@@ -1,41 +1,44 @@
 // Author(s): Xue Ling, Xiu Jia
-const { createMatch } = require("../controller/matchController");
 const { getRandomQuestion, getComplexity } = require("../service/questionService");
+
+let socketMap = {};
 
 const handleSocketIO = (io) => {
   io.on("connection", (socket) => {
     console.log(`A user connected with socket ID: ${socket.id}`);
 
-    // Temporary in here because no match service right now
-    socket.on("match_found", async (data) => {
+    socket.on("createSocketRoom", async ({ data, id, currentUser }) => {
+      // Store the socket id for the user
+      socketMap[currentUser] = socket.id;
+
       const { user1, user2 } = data;
-      const { roomId } = await createMatch(user1, user2);
 
       const complexity = getComplexity(user1, user2);
 
       const questionData = await getRandomQuestion(user1.category, complexity);
 
-      socket.join(roomId);
+      socket.join(id);
 
-      socket.emit("readyForCollab", { 
-        roomId,
+      console.log(`User with socket ID ${socket.id} joined room with ID ${id}`);
+
+      socket.emit("readyForCollab", {
+        id: id,
         user1,
         user2,
         questionData
-       });
-      console.log(`User with socket ID ${socket.id} joined room with ID ${roomId}`);
+      });
     });
 
-    socket.on("sendContent", ({ roomId, content }) => {
-      socket.to(roomId).emit("receiveContent", { content });
+    socket.on("sendContent", ({ id, content }) => {
+      socket.to(id).emit("receiveContent", { content: content });
     });
 
-    socket.on("sendCode", ({ roomId, code }) => {
-      socket.to(roomId).emit("receiveCode", { code });
+    socket.on("sendCode", ({ id, code }) => {
+      socket.to(id).emit("receiveCode", { code });
     });
 
-    socket.on("languageChange", ({ roomId, language }) => {
-      socket.to(roomId).emit("languageChange", { language });
+    socket.on("languageChange", ({ id, language }) => {
+      socket.to(id).emit("languageChange", { language });
     });
 
     // Handle disconnection
