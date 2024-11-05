@@ -9,6 +9,9 @@ import QuestionPanel from "../../components/QuestionPanel";
 import useSessionStorage from "../../hook/useSessionStorage";
 import { collaborationSocket } from "../../config/socket";
 
+import CallButton from "../../components/CallButton";
+import CallStatus from "../../components/CallStatus";
+
 const CollaborationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,6 +38,11 @@ const CollaborationPage = () => {
     <div>
       <NavBar />
       <QuestionPanel questionData={questionData} />
+      {/* Voice Call Components */}
+      <div id="voice-call">
+        <CallButton recipientId={roomId} />
+        <CallStatus />
+      </div>
       <div id="tabs">
         <button onClick={() => handleTabChange("code")} autoFocus>Code</button>
         <button onClick={() => handleTabChange("content")}>Text</button>

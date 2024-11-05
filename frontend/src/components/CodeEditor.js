@@ -39,13 +39,13 @@ const CodeEditor = ({ id }) => {
 
   function handleEditorChange(code, event) {
     setCode(code);
-    collaborationSocket.emit("sendCode", { id, code });
+    collaborationSocket.emit("sendCode", { code });
   }
 
   const handleLanguageChange = (event) => {
     const language = event.target.value;
     setLanguage(language);
-    collaborationSocket.emit("languageChange", { id, language });
+    collaborationSocket.emit("languageChange", { language });
   };
 
   return (

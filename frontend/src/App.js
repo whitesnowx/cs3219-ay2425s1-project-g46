@@ -47,7 +47,7 @@ function App() {
           <Route path="/user/signup" element={<Signup />}></Route>
           <Route path="/user/login" element={<Login />}></Route>
         </Route>
-
+        
         {/* Error page */}
         <Route path="*" element={<PageNotFound />} />
       </Routes>

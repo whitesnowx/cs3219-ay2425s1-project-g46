@@ -65,28 +65,28 @@ const handleSocketIO = (io) => {
             timestamp: currentTime
           };
 
-          try {
-            const collabRef = db.collection("collabs").doc(id);
-            const doc = await collabRef.get();
+          // try {
+          //   if (haveNewData[id]) {
+          //     const collabRef = db.collection("collabs").doc(id);
+          //     const doc = await collabRef.get();
 
-            if (doc.exists) {
-              if (haveNewData[id]) {
-                haveNewData[id] = false;
-                await collabRef.update(periodicData);
-                console.log(`Collab Data for roomid ${id} updated to Firebase at ${currentTime}`);
-              }
-            } else {
+          //     if (doc.exists) {
+          //       haveNewData[id] = false;
+          //       await collabRef.update(periodicData);
+          //       console.log(`Collab Data for roomid ${id} updated to Firebase at ${currentTime}`);
+          //     }
+          //   } else {
 
-              await collabRef.set({
-                roomId: id,
-                ...periodicData
-              });
-              console.log(`New Collab page for roomid ${id} recorded to Firebase at ${currentTime}`);
-            }
+          //     await collabRef.set({
+          //       roomId: id,
+          //       ...periodicData
+          //     });
+          //     console.log(`New Collab page for roomid ${id} recorded to Firebase at ${currentTime}`);
+          //   }
 
-          } catch (error) {
-            console.error("Fail to save to database: ", error);
-          }
+          // } catch (error) {
+          //   console.error("Fail to save to database: ", error);
+          // }
         }, 5000);
 
 
