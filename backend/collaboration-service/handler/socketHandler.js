@@ -10,6 +10,7 @@ let latestContentCode = {};
 let latestLanguage = {}
 let haveNewData = {};
 let activeUserInRoom = {}
+let usersInRoom = {}; 
 
 const handleSocketIO = (io) => {
   io.on("connection", (socket) => {
@@ -25,8 +26,12 @@ const handleSocketIO = (io) => {
       console.log(`User with socket ID ${socket.id} joined room with ID ${id}`);
       if (activeUserInRoom[id]) {
         activeUserInRoom[id] = activeUserInRoom[id] + 1
+        usersInRoom[id].user2 = socket.id;
       } else   {
+        
         activeUserInRoom[id] = 1
+        usersInRoom[id] = { user1: null, user2: null };
+        usersInRoom[id].user1 = socket.id;
       }
       console.log(`UactiveUserInRoom[id]: ${activeUserInRoom[id]}`);
 
@@ -117,6 +122,14 @@ const handleSocketIO = (io) => {
       haveNewData[id] = true;
       latestLanguage[id] = language;
       socket.to(id).emit("languageChange", { language });
+    });
+
+    socket.on('signal', (data) => {
+      console.log(`Signing from ${socket.id}`);
+      socket.to(socket.id).emit('signal', {
+        sender: socket.id,
+        signal: data.signal,
+      });
     });
 
     // Handle disconnection
