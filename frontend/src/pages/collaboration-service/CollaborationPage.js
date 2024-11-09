@@ -9,6 +9,7 @@ import useSessionStorage from "../../hook/useSessionStorage";
 import NavBar from "../../components/NavBar";
 import QuestionPanel from "../../components/QuestionPanel";
 import ChatBox from "../../components/ChatBox";
+import CallPanel from "../../components/CallPanel";
 
 const CollaborationPage = () => {
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ const CollaborationPage = () => {
     <div>
       <NavBar />
       <QuestionPanel questionData={questionData} />
+      <CallPanel id={id}/>
       <div id="tabs">
         <button onClick={() => handleTabChange("code")} autoFocus>
           Code

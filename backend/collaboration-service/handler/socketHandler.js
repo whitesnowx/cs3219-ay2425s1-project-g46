@@ -158,6 +158,16 @@ const handleSocketIO = (io) => {
       socket.to(id).emit("receiveMessage", { message });
     });
 
+    socket.on('audioStream', (data) => {
+      const { id, audioData } = data;
+      socket.to(id).emit('audioStream', audioData);
+    });
+
+    socket.on('videoStream', (data) => {
+      const { id, stream } = data;
+      socket.to(id).emit('videoStream', stream);
+    });
+
     // Handle submission
 
     socket.on("endSession", ({ id }) => {
